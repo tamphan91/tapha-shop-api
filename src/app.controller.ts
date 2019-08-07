@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { User } from './users/user.model';
+import { User } from './users/users.entity';
 // import { CreateUserDto } from './users/dto/create-user.dto';
 
 @Controller()
