@@ -1,4 +1,4 @@
-import { PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BaseEntity } from 'typeorm';
+import { PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BaseEntity, Column } from 'typeorm';
 
 export abstract class Base extends BaseEntity {
 
@@ -10,4 +10,7 @@ export abstract class Base extends BaseEntity {
 
     @UpdateDateColumn()
     updatedAt: string;
+
+    @Column('smallint')
+    state: number;
 }
