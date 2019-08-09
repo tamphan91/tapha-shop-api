@@ -21,9 +21,12 @@ async function bootstrap() {
    * will be exposed on two different SwaggerUI with two different endpoints.
    */
 
+  const schema = process.env.SWAGGER_SCHEMA === 'https' ? 'https' : 'http';
+
   const options = new DocumentBuilder()
     .setTitle('Auth example')
     .setDescription('The cats API description')
+    .setSchemes(schema)
     .setVersion('1.0')
     .build();
 
@@ -36,6 +39,7 @@ async function bootstrap() {
     .setTitle('Roles example')
     .setDescription('The roles API description')
     .setVersion('1.0')
+    .setSchemes(schema)
     .build();
 
   const roleDocument = SwaggerModule.createDocument(app, secondOptions, {
@@ -47,6 +51,7 @@ async function bootstrap() {
     .setTitle('Users example')
     .setDescription('The users API description')
     .setVersion('1.0')
+    .setSchemes(schema)
     .build();
 
   const userDocument = SwaggerModule.createDocument(app, userOptions, {
@@ -57,6 +62,7 @@ async function bootstrap() {
   const roleToUserOptions = new DocumentBuilder()
     .setTitle('RoleToUser example')
     .setDescription('The RoleToUser API description')
+    .setSchemes(schema)
     .setVersion('1.0')
     .build();
 
