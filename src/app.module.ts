@@ -2,27 +2,27 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import 'dotenv/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PhotoModule } from './photo/photo.module';
+import { RoleModule } from './role/role.module';
+import { UserModule } from './user/user.module';
+import 'dotenv/config';
+import { RoleToUserModule } from './role_user/role_user.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'ec2-174-129-227-128.compute-1.amazonaws.com',
-      port: 5432,
-      username: 'dcnemggtczuvnc',
-      password: 'dd0f568d1aa0f976d1b206a8c1597c722c1d77bb492dc8fe95a9e5722378a480',
-      database: 'd7meov6tdkbfae',
-      // entities: ['./src/**/*.entity.ts", "./dist/**/*.entity.ts'],
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT, null),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
+      synchronize: process.env.DB_SYNCHRONIZE.toLocaleLowerCase() === 'true',
       logging: true,
       ssl: true,
     }),
-    AuthModule, UsersModule, PhotoModule],
+    AuthModule, RoleModule, UserModule, RoleToUserModule],
   controllers: [AppController],
   providers: [AppService],
 })
