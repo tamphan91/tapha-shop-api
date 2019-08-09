@@ -1,16 +1,19 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
 import { RoleToUser } from './role_user.entity';
 import { RoleToUserService } from './role_user.service';
-import { ApiUseTags } from '@nestjs/swagger';
+import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @Crud({
     model: {
         type: RoleToUser,
     },
 })
-@ApiUseTags('role_to_user')
-@Controller('role_to_user')
+@ApiUseTags('roleToUser')
+@Controller('roleToUser')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
 export class RoleToUserController {
     constructor(public service: RoleToUserService) {
     }

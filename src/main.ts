@@ -6,9 +6,12 @@ import { RoleModule } from './role/role.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { RoleToUserModule } from './role_user/role_user.module';
+import * as helmet from 'helmet';
+import * as csurf from 'csurf';
+import * as rateLimit from 'express-rate-limit';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   const port = process.env.PORT || 3000;
 
   /**
@@ -24,54 +27,63 @@ async function bootstrap() {
   const schema = process.env.SWAGGER_SCHEMA === 'https' ? 'https' : 'http';
 
   const options = new DocumentBuilder()
-    .setTitle('Auth example')
-    .setDescription('The cats API description')
+    .setTitle('Tapha example')
+    .setDescription('The taphas API description')
     .setSchemes(schema)
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const authDocument = SwaggerModule.createDocument(app, options, {
-    include: [AuthModule],
+    include: [AuthModule, RoleModule, UserModule, RoleToUserModule],
   });
   SwaggerModule.setup('api', app, authDocument);
 
-  const secondOptions = new DocumentBuilder()
-    .setTitle('Roles example')
-    .setDescription('The roles API description')
-    .setVersion('1.0')
-    .setSchemes(schema)
-    .build();
+  // const secondOptions = new DocumentBuilder()
+  //   .setTitle('Roles example')
+  //   .setDescription('The roles API description')
+  //   .setVersion('1.0')
+  //   .setSchemes(schema)
+  //   .build();
 
-  const roleDocument = SwaggerModule.createDocument(app, secondOptions, {
-    include: [RoleModule],
-  });
-  SwaggerModule.setup('api/roles', app, roleDocument);
+  // const roleDocument = SwaggerModule.createDocument(app, secondOptions, {
+  //   include: [RoleModule],
+  // });
+  // SwaggerModule.setup('api/roles', app, roleDocument);
 
-  const userOptions = new DocumentBuilder()
-    .setTitle('Users example')
-    .setDescription('The users API description')
-    .setVersion('1.0')
-    .setSchemes(schema)
-    .build();
+  // const userOptions = new DocumentBuilder()
+  //   .setTitle('Users example')
+  //   .setDescription('The users API description')
+  //   .setVersion('1.0')
+  //   .setSchemes(schema)
+  //   .build();
 
-  const userDocument = SwaggerModule.createDocument(app, userOptions, {
-    include: [UserModule],
-  });
-  SwaggerModule.setup('api/users', app, userDocument);
+  // const userDocument = SwaggerModule.createDocument(app, userOptions, {
+  //   include: [UserModule],
+  // });
+  // SwaggerModule.setup('api/users', app, userDocument);
 
-  const roleToUserOptions = new DocumentBuilder()
-    .setTitle('RoleToUser example')
-    .setDescription('The RoleToUser API description')
-    .setSchemes(schema)
-    .setVersion('1.0')
-    .build();
+  // const roleToUserOptions = new DocumentBuilder()
+  //   .setTitle('RoleToUser example')
+  //   .setDescription('The RoleToUser API description')
+  //   .setSchemes(schema)
+  //   .setVersion('1.0')
+  //   .build();
 
-  const roleToUserDocument = SwaggerModule.createDocument(app, roleToUserOptions, {
-    include: [RoleToUserModule],
-  });
-  SwaggerModule.setup('api/role_to_user', app, roleToUserDocument);
+  // const roleToUserDocument = SwaggerModule.createDocument(app, roleToUserOptions, {
+  //   include: [RoleToUserModule],
+  // });
+  // SwaggerModule.setup('api/roleToUser', app, roleToUserDocument);
 
+  app.use(helmet());
+  app.use(
+    rateLimit({
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      max: 100, // limit each IP to 100 requests per windowMs
+    }),
+  );
   app.useGlobalPipes(new ValidationPipe());
+  // app.use(csurf());
   await app.listen(port);
   Logger.log('The server is running in port ' + port, 'Bootstrap');
 }
