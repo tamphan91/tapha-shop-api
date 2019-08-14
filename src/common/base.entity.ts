@@ -11,6 +11,6 @@ export abstract class Base extends BaseEntity {
     @UpdateDateColumn()
     updatedAt: string;
 
-    @Column('smallint')
+    @Column('smallint', {default: 1})
     state: number;
 }

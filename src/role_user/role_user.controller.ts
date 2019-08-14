@@ -9,6 +9,16 @@ import { AuthGuard } from '@nestjs/passport';
     model: {
         type: RoleToUser,
     },
+    query: {
+        join: {
+            role: {
+                eager: false,
+            },
+            user: {
+                eager: false,
+            },
+        },
+    },
 })
 @ApiUseTags('roleToUser')
 @Controller('roleToUser')

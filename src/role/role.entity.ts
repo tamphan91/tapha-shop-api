@@ -2,7 +2,7 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { IsIn } from 'class-validator';
 import { Entity, Column, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { Base } from '../common/base.entity';
-import { User } from '../user/user.entity';
+// import { User } from '../user/user.entity';
 import { UserRole } from '../common/constants';
 import { RoleToUser } from '../role_user/role_user.entity';
 
@@ -14,7 +14,7 @@ export class Role extends Base {
     length: 9,
     unique: true,
   })
-  @ApiModelProperty({ example: 'Admin', description: 'The name of the role', enum: ['Admin', 'Moderator', 'User'] })
+  @ApiModelProperty({ example: 'Admin', description: 'The name of the role', enum: UserRole })
   @IsIn(['Admin', 'Moderator', 'User'])
   name: string;
 
