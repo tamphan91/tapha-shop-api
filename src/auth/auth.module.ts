@@ -7,6 +7,8 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../common/constants';
 import { AuthController } from './auth.controller';
+import { GoogleStrategy } from './google.strategy';
+import 'dotenv/config';
 
 @Module({
   imports: [
@@ -17,7 +19,7 @@ import { AuthController } from './auth.controller';
       signOptions: { expiresIn: '600s' },
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy],
   exports: [AuthService, PassportModule],
   controllers: [AuthController],
 })

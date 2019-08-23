@@ -10,8 +10,11 @@ import { ApiUseTags } from '@nestjs/swagger';
     },
     query: {
         join: {
-            roleToUsers: {
+            'roleToUsers': {
                 eager: false,
+            },
+            'roleToUsers.role': {
+                allow: ['name'],
             },
         },
     },
