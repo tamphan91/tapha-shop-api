@@ -3,10 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RoleModule } from './role/role.module';
 import { UserModule } from './user/user.module';
+import { ProfileController } from './profile/profile.controller';
+import { ProfileModule } from './profile/profile.module';
 import 'dotenv/config';
-import { RoleToUserModule } from './role_user/role_user.module';
 
 @Module({
   imports: [
@@ -22,8 +22,8 @@ import { RoleToUserModule } from './role_user/role_user.module';
       logging: true,
       ssl: true,
     }),
-    AuthModule, RoleModule, UserModule, RoleToUserModule],
-  controllers: [AppController],
+    AuthModule, UserModule, ProfileModule],
+  controllers: [AppController, ProfileController],
   providers: [AppService],
 })
 export class AppModule {}

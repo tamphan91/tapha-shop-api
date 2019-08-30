@@ -19,9 +19,12 @@ export class AuthService {
 
   async validateUser(username: string, pass: string): Promise<any> {
     Logger.log('auth validate');
-    const user = await this.userService.findOne({ email: username });
-    if (user && user.password === pass) {
-      const { password, ...result } = user;
+    const user = await this.userService.findAll({ select: ['id', 'email', 'password'], where: {email: username}, relations: ['profile']});
+    // tslint:disable-next-line:no-console
+    // console.log(user0[0]);
+    // const user = await this.userService.findOne({ email: username });
+    if (user[0] && user[0].password === pass) {
+      const { password, ...result } = user[0];
       return result;
     }
     return null;

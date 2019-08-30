@@ -2,13 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { RoleModule } from './role/role.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { RoleToUserModule } from './role_user/role_user.module';
 import * as helmet from 'helmet';
 import * as csurf from 'csurf';
 import * as rateLimit from 'express-rate-limit';
+import { ProfileModule } from './profile/profile.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -35,7 +34,7 @@ async function bootstrap() {
     .build();
 
   const authDocument = SwaggerModule.createDocument(app, options, {
-    include: [AuthModule, RoleModule, UserModule, RoleToUserModule],
+    include: [AuthModule, UserModule, ProfileModule],
   });
   SwaggerModule.setup('api', app, authDocument);
 

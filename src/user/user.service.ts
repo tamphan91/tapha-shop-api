@@ -18,7 +18,7 @@ export class UserService extends TypeOrmCrudService<User> {
   //   return this.userRepository.findOne({username});
   // }
 
-  // async findAll(): Promise<User[]> {
-  //   return await this.userRepository.find();
-  // }
+  async findAll(conditions: any): Promise<User[]> {
+    return await this.repo.find(conditions);
+  }
 }

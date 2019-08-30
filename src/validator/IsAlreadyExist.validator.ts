@@ -3,7 +3,7 @@ import {getRepository} from 'typeorm';
 import {User} from '../user/user.entity';
 
 @ValidatorConstraint({ async: true })
-export class IsEmailAlreadyExistConstraint implements ValidatorConstraintInterface {
+export class IsAlreadyExistConstraint implements ValidatorConstraintInterface {
 
     validate(email: any, args: ValidationArguments) {
         const userRepository = getRepository(User);
@@ -15,14 +15,14 @@ export class IsEmailAlreadyExistConstraint implements ValidatorConstraintInterfa
 
 }
 
-export function IsEmailAlreadyExist(validationOptions?: ValidationOptions) {
+export function IsAlreadyExist(validationOptions?: ValidationOptions) {
    return (object: any, propertyName: string) => {
         registerDecorator({
             target: object.constructor,
             propertyName,
             options: validationOptions,
             constraints: [],
-            validator: IsEmailAlreadyExistConstraint,
+            validator: IsAlreadyExistConstraint,
         });
    };
 }
