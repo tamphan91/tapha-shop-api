@@ -8,6 +8,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../guard/roles.guard';
 import { UserRole } from '../common/constants';
 import { UpdateUserDTO } from './update-user.dto';
+import { UsersGuard } from '../guard/users.guard';
 
 @Crud({
     model: {
@@ -33,27 +34,27 @@ import { UpdateUserDTO } from './update-user.dto';
         createManyBase: {
             decorators: [
                 UseGuards(AuthGuard('jwt'), RolesGuard),
-                ApiBearerAuth(), Roles(UserRole.Admin),
+                ApiBearerAuth(), Roles(UserRole.Admin, UserRole.Moderator),
             ],
         },
-        // getOneBase: {
-        //     decorators: [
-        //         UseGuards(AuthGuard('jwt'), RolesGuard),
-        //         ApiBearerAuth(), Roles(UserRole.Moderator, UserRole.User),
-        //     ],
-        // },
-        // updateOneBase: {
-        //     decorators: [
-        //         UseGuards(AuthGuard('jwt'), RolesGuard),
-        //         ApiBearerAuth(), Roles(UserRole.Moderator, UserRole.User),
-        //     ],
-        // },
-        // replaceOneBase: {
-        //     decorators: [
-        //         UseGuards(AuthGuard('jwt'), RolesGuard),
-        //         ApiBearerAuth(), Roles(UserRole.Moderator, UserRole.User),
-        //     ],
-        // },
+        getOneBase: {
+            decorators: [
+                UseGuards(AuthGuard('jwt'), RolesGuard, UsersGuard),
+                ApiBearerAuth(), Roles(UserRole.Admin, UserRole.Moderator, UserRole.User),
+            ],
+        },
+        updateOneBase: {
+            decorators: [
+                UseGuards(AuthGuard('jwt'), RolesGuard, UsersGuard),
+                ApiBearerAuth(), Roles(UserRole.Admin, UserRole.Moderator, UserRole.User),
+            ],
+        },
+        replaceOneBase: {
+            decorators: [
+                UseGuards(AuthGuard('jwt'), RolesGuard, UsersGuard),
+                ApiBearerAuth(), Roles(UserRole.Admin, UserRole.Moderator, UserRole.User),
+            ],
+        },
     },
 })
 @ApiUseTags('user')

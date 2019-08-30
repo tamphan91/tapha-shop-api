@@ -6,7 +6,7 @@ export abstract class Base extends BaseEntity {
     id: number;
 
     @CreateDateColumn()
-    createdAt: Date;
+    createdAt: string;
 
     @UpdateDateColumn()
     updatedAt: string;

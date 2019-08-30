@@ -1,9 +1,7 @@
 import { Base } from '../common/base.entity';
-import { Column, OneToOne, Entity } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsString, IsOptional } from 'class-validator';
 import { MyMaxDate } from '../validator/MyMaxDate.validator';
-import { User } from '../user/user.entity';
 import { UserRole, Gender } from '../common/constants';
 import { CrudValidationGroups } from '@nestjsx/crud';
 const { UPDATE } = CrudValidationGroups;
@@ -25,9 +23,9 @@ export class UpdateProfileDTO extends Base {
         message: 'Please enter a valid date of birth.',
     })
     @IsOptional({ groups: [UPDATE] })
-    readonly dateOfBirth: Date;
+    readonly dateOfBirth: string;
 
-    @ApiModelProperty({ enum: Gender })
+    @ApiModelProperty({ example: 'Male', enum: Gender })
     @IsOptional({ groups: [UPDATE] })
     readonly gender: Gender;
 

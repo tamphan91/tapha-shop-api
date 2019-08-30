@@ -40,7 +40,7 @@ export class Profile extends Base {
         message: 'Please enter a valid date of birth.',
     })
     @IsOptional({ groups: [UPDATE] })
-    dateOfBirth: Date;
+    dateOfBirth: string;
 
     @Column({
         type: 'enum',
