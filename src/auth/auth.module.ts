@@ -9,10 +9,14 @@ import { jwtConstants } from '../common/constants';
 import { AuthController } from './auth.controller';
 import { GoogleStrategy } from './google.strategy';
 import 'dotenv/config';
+import { GoogleModule } from '../google/google.module';
+import { ProfileModule } from '../profile/profile.module';
 
 @Module({
   imports: [
     UserModule,
+    GoogleModule,
+    ProfileModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: jwtConstants.secret,

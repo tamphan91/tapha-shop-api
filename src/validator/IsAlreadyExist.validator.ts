@@ -3,26 +3,30 @@ import {getRepository} from 'typeorm';
 import {User} from '../user/user.entity';
 
 @ValidatorConstraint({ async: true })
-export class IsAlreadyExistConstraint implements ValidatorConstraintInterface {
+export class IsUserEmailAlreadyExistConstraint implements ValidatorConstraintInterface {
 
-    validate(email: any, args: ValidationArguments) {
+    async validate(email: any, args: ValidationArguments) {
         const userRepository = getRepository(User);
-        return userRepository.findOne({email}).then(user => {
-            // if (user) return false;
-            return !user;
-        });
+        // return userRepository.findOne({email}).then(user => {
+        //     // if (user) return false;
+        //     return !user;
+        // });
+
+        // tslint:disable-next-line:no-console
+        // console.log('user:::::::::::', (await userRepository.findOne({email})));
+        return !(await userRepository.findOne({email}));
     }
 
 }
 
-export function IsAlreadyExist(validationOptions?: ValidationOptions) {
+export function IsUserEmailAlreadyExist(validationOptions?: ValidationOptions) {
    return (object: any, propertyName: string) => {
         registerDecorator({
             target: object.constructor,
             propertyName,
             options: validationOptions,
             constraints: [],
-            validator: IsAlreadyExistConstraint,
+            validator: IsUserEmailAlreadyExistConstraint,
         });
    };
 }

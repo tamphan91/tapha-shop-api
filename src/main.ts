@@ -5,14 +5,28 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import * as helmet from 'helmet';
-import * as csurf from 'csurf';
+// import * as csurf from 'csurf';
 import * as rateLimit from 'express-rate-limit';
 import { ProfileModule } from './profile/profile.module';
+import { getRepository } from 'typeorm';
+import { User } from './user/user.entity';
+import { Profile } from './profile/profile.entity';
+import { UserRole, Gender } from './common/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   const port = process.env.PORT || 3000;
-
+  const userRepository = getRepository(User);
+  const adminUser = await userRepository.findOne({email: 'tamphan91@gmail.com'});
+  if (!adminUser) {
+    const profileRepository = getRepository(Profile);
+    // tslint:disable-next-line:max-line-length
+    const adminProfileToSave = profileRepository.create({firstName: 'tam', lastName: 'phan', gender: Gender.Male, dateOfBirth: '1991-10-04', roles: [UserRole.Admin, UserRole.Moderator, UserRole.User]});
+    const adminProfileReturn = await profileRepository.save(adminProfileToSave);
+    const adminUserToSave  = userRepository.create({email: 'tamphan91@gmail.com', password: '123', profileId: adminProfileReturn.id});
+    await userRepository.save(adminUserToSave);
+    Logger.log('Inited admin user successfull!');
+  }
   /**
    * createDocument(application, configurationOptions, extraOptions);
    *

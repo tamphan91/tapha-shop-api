@@ -1,14 +1,14 @@
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { Controller, UseGuards, ClassSerializerInterceptor, UseInterceptors, Body } from '@nestjs/common';
-import { Crud, CrudController, Override, CrudRequest, ParsedRequest, ParsedBody } from '@nestjsx/crud';
+import { Crud, CrudController, Override, CrudRequest, ParsedRequest, ParsedBody, CreateManyDto } from '@nestjsx/crud';
 import { ApiUseTags, ApiBearerAuth, ApiResponse, ApiCreatedResponse } from '@nestjs/swagger';
-import { Roles } from '../decorator/roles.decorator';
+import { Roles } from '../decorator/custom.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../guard/roles.guard';
 import { UserRole } from '../common/constants';
 import { UpdateUserDTO } from './update-user.dto';
-import { UsersGuard } from '../guard/users.guard';
+import { PermissionsGuard } from '../guard/permissions.guard';
 
 @Crud({
     model: {
@@ -24,45 +24,11 @@ import { UsersGuard } from '../guard/users.guard';
     },
     routes: {
         exclude: ['deleteOneBase'],
-        getManyBase: {
-            decorators: [
-                UseGuards(AuthGuard('jwt'), RolesGuard),
-                ApiBearerAuth(), Roles(UserRole.Admin, UserRole.Moderator),
-            ],
-            // interceptors: [ClassSerializerInterceptor],
-        },
-        createManyBase: {
-            decorators: [
-                UseGuards(AuthGuard('jwt'), RolesGuard),
-                ApiBearerAuth(), Roles(UserRole.Admin, UserRole.Moderator),
-            ],
-        },
-        getOneBase: {
-            decorators: [
-                UseGuards(AuthGuard('jwt'), RolesGuard, UsersGuard),
-                ApiBearerAuth(), Roles(UserRole.Admin, UserRole.Moderator, UserRole.User),
-            ],
-        },
-        updateOneBase: {
-            decorators: [
-                UseGuards(AuthGuard('jwt'), RolesGuard, UsersGuard),
-                ApiBearerAuth(), Roles(UserRole.Admin, UserRole.Moderator, UserRole.User),
-            ],
-        },
-        replaceOneBase: {
-            decorators: [
-                UseGuards(AuthGuard('jwt'), RolesGuard, UsersGuard),
-                ApiBearerAuth(), Roles(UserRole.Admin, UserRole.Moderator, UserRole.User),
-            ],
-        },
     },
 })
 @ApiUseTags('user')
 @Controller('user')
-// @UseInterceptors(ClassSerializerInterceptor)
-@ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'), RolesGuard)
-@Roles(UserRole.Admin, UserRole.Moderator, UserRole.User)
+@Roles(UserRole.Admin)
 export class UserController implements CrudController<User> {
     constructor(public service: UserService) { }
 
@@ -70,16 +36,50 @@ export class UserController implements CrudController<User> {
         return this;
     }
 
+    @Roles(UserRole.Moderator)
+    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    @ApiBearerAuth()
+    @Override('getManyBase')
+    getUsers(
+        @ParsedRequest() req: CrudRequest,
+    ) {
+        return this.base.getManyBase(req);
+    }
+
+    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    @ApiBearerAuth()
+    @Override('createManyBase')
+    createUsers(
+        @ParsedRequest() req: CrudRequest,
+        @ParsedBody() dto: CreateManyDto<User>,
+    ) {
+        return this.base.createManyBase(req, dto);
+    }
+
+    @Roles(UserRole.User, UserRole.Moderator)
+    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    @ApiBearerAuth()
+    @Override('getOneBase')
+    getUser(
+        @ParsedRequest() req: CrudRequest,
+    ) {
+        return this.base.getOneBase(req);
+    }
+
+    @Roles(UserRole.User, UserRole.Moderator)
+    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    @ApiBearerAuth()
     @Override('updateOneBase')
     updateUser(
         @ParsedRequest() req: CrudRequest,
         @ParsedBody() dto: UpdateUserDTO,
     ) {
-        // tslint:disable-next-line:no-console
-        console.log('updateOneBase', dto);
         return this.base.updateOneBase(req, Object.assign(new User(), dto));
     }
 
+    @Roles(UserRole.User, UserRole.Moderator)
+    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    @ApiBearerAuth()
     @Override('replaceOneBase')
     replaceUser(
         @ParsedRequest() req: CrudRequest,
