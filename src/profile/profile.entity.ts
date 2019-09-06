@@ -31,7 +31,7 @@ export class Profile extends Base {
     // }
 
     @Column('date', { nullable: true })
-    @ApiModelProperty({ example: '1991-08-20', description: 'The date of birth' })
+    @ApiModelProperty({ example: '1991-08-20', description: 'The date of birth (yyyy-mm-dd)' })
     @MyMaxDate({
         message: 'Please enter a valid date of birth.',
     })
@@ -42,21 +42,21 @@ export class Profile extends Base {
         enum: Gender,
     })
     @IsString()
-    @ApiModelProperty({ enum: Gender })
+    @ApiModelProperty({ enum: Object.keys(Gender) })
     gender: Gender;
 
     @Column('text', {nullable: true})
-    @ApiModelProperty({ example: 'abc.jpeg', description: 'The User photo' })
-    @IsString()
+    // @ApiModelProperty({ example: 'abc.jpeg', description: 'The User photo' })
+    // @IsString()
     photo: string;
 
     @Column({
         type: 'enum',
         enum: UserRole,
         default: [UserRole.User],
-        array: true,
+        array: true, // this property makes update profile always appears roles ???
     })
-    // @ApiModelProperty({ enum: UserRole, example: ['Admin', 'Moderator', 'User'] })
+    // @ApiModelProperty({type: UserRole, enum: Object.keys(UserRole), example: ['Admin', 'Moderator', 'User'], isArray: true })
     roles: UserRole[];
 
     @OneToOne(type => User, user => user.profile) // specify inverse side as a second parameter

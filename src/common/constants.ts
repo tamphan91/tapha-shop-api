@@ -17,3 +17,8 @@ export enum Gender {
     Girl = 'Girl',
     Other = 'Other',
 }
+
+export enum Provider {
+    GOOGLE = 'google',
+    FACEBOOK = 'facebook',
+}

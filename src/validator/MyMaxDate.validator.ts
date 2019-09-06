@@ -5,6 +5,8 @@ import * as moment from 'moment';
 export class MyMaxDateConstraint implements ValidatorConstraintInterface {
 
     validate(dateInput: any, args: ValidationArguments) {
+        // tslint:disable-next-line:no-console
+        console.log('dateInput', dateInput);
         return moment(dateInput).isBefore(moment(new Date()).format('YYYY-MM-DD'));
     }
 

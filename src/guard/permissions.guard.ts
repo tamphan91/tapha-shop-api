@@ -9,21 +9,28 @@ export class PermissionsGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    // const id = parseInt(request.params.id, null);
+    const id = parseInt(request.params.id, null);
+    if (!id) {
+      return true;
+    }
     const roles = request.user.payload.profile.roles;
-    return roles.includes(UserRole.Admin) || roles.includes(UserRole.Moderator) || await this.hasPermission(request);
+    return roles.includes(UserRole.Admin) || await this.hasPermission(request, id, roles);
+    // return roles.includes(UserRole.Admin) || roles.includes(UserRole.Moderator) || await this.hasPermission(request);
     // return !(request.user.payload.id !== id && (!roles.includes(UserRole.Admin) && !roles.includes(UserRole.Moderator)));
   }
 
-  async hasPermission(request: any) {
-    const id = parseInt(request.params.id, null);
+  async hasPermission(request: any, id: number, roles: UserRole[]) {
+    let isAllow = false;
     if (request.originalUrl.indexOf('/user/') === 0) {
-      return request.user.payload.id === id;
+      isAllow = request.user.payload.id === id;
     } else if (request.originalUrl.indexOf('/profile/') === 0) {
-      return request.user.payload.profile.id === id;
-      // return await getRepository(Profile).findOne(id);
-    } else {
-      return null;
+      if (request.user.payload.profile.id === id) {
+        isAllow = true;
+      } else {
+        const profile = await getRepository(Profile).findOne(id);
+        isAllow = !profile.roles.includes(UserRole.Admin) && roles.includes(UserRole.Moderator);
+      }
     }
+    return isAllow;
   }
 }

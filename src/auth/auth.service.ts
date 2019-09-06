@@ -2,17 +2,17 @@ import { Injectable, Logger, InternalServerErrorException } from '@nestjs/common
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { sign } from 'jsonwebtoken';
-import { jwtConstants, Gender } from '../common/constants';
+import { jwtConstants, Gender, Provider } from '../common/constants';
 import { GoogleService } from '../google/google.service';
 import { ProfileService } from '../profile/profile.service';
 import { Profile } from '../profile/profile.entity';
 import { Google } from '../google/google.entity';
 import { getRepository } from 'typeorm';
 
-export enum Provider {
-  GOOGLE = 'google',
-  FACEBOOK = 'facebook',
-}
+// export enum Provider {
+//   GOOGLE = 'google',
+//   FACEBOOK = 'facebook',
+// }
 
 @Injectable()
 export class AuthService {
@@ -28,7 +28,7 @@ export class AuthService {
     Logger.log('auth validate');
     const user = await this.userService.findAll({ select: ['id', 'email', 'password'], where: { email: username }, relations: ['profile'] });
     // tslint:disable-next-line:no-console
-    console.log(user[0]);
+    // console.log(user[0]);
     // const user = await this.userService.findOne({ email: username });
     if (user[0] && user[0].password === pass) {
       const { password, ...result } = user[0];
@@ -51,9 +51,9 @@ export class AuthService {
       // to register the user using their thirdPartyId (in this case their googleId)
       // let user: IUser = await this.usersService.findOneByThirdPartyId(thirdPartyId, provider);
       // tslint:disable-next-line:no-console
-      console.log('thirdPartyId', thirdPartyId);
+      // console.log('thirdPartyId', thirdPartyId);
       // tslint:disable-next-line:no-console
-      console.log('profile', profile);
+      // console.log('profile', profile);
       const google = await this.googleService.findOne({ thirdPartyId });
 
       const payload = {

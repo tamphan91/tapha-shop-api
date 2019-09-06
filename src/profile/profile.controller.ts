@@ -1,15 +1,18 @@
-import { Controller, UseGuards, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
-import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, UseGuards, UseInterceptors, ClassSerializerInterceptor, Post, UploadedFile, Param, Body } from '@nestjs/common';
+import { ApiUseTags, ApiBearerAuth, ApiImplicitFile, ApiImplicitParam, ApiImplicitBody, ApiOperation } from '@nestjs/swagger';
 import { ProfileService } from './profile.service';
 import { Crud, CrudController, Override, ParsedRequest, CrudRequest, ParsedBody, CreateManyDto } from '@nestjsx/crud';
 import { Profile } from './profile.entity';
 import { RolesGuard } from '../guard/roles.guard';
 import { Roles } from '../decorator/custom.decorator';
 import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { UserRole } from '../common/constants';
 import { UpdateProfileDTO } from '../profile/update-profile.dto';
 import { PermissionsGuard } from '../guard/permissions.guard';
 import { ProfilesGuard } from '../guard/profiles.guard';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Crud({
     model: {
@@ -36,6 +39,41 @@ export class ProfileController implements CrudController<Profile> {
 
     get base(): CrudController<Profile> {
         return this;
+    }
+
+    @Post(':id/updateRoles')
+    @ApiOperation({ description: 'Update user role by profileId', title: 'Update user role' })
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @ApiBearerAuth()
+    @ApiImplicitParam({ name: 'id', required: true, description: 'Id of profile' })
+    @ApiImplicitBody({name: 'roles', type: Object, description: 'Array of UserRole, example: {"roles": ["Admin", "Moderator", "User"]}'})
+    async updateRole(
+        @Body('roles') roles: UserRole[],
+        @Param('id') profileId,
+    ) {
+        await this.service.updateRoles(roles, profileId);
+        return 'Updated Roles successfully';
+    }
+
+    @Post(':id/updatePhoto')
+    @ApiOperation({ description: 'Update profile photo by profileId', title: 'Update profile photo' })
+    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard, ProfilesGuard)
+    @Roles(UserRole.User, UserRole.Moderator)
+    @UseInterceptors(FileInterceptor('file', {
+        storage: diskStorage({
+            destination: './photos',
+            filename: (req, file, cb) => {
+                const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
+                return cb(null, `${randomName}${extname(file.originalname)}`);
+            },
+        }),
+    }))
+    @ApiBearerAuth()
+    @ApiImplicitFile({ name: 'file', required: true, description: 'Photo of profile' })
+    @ApiImplicitParam({ name: 'id', required: true, description: 'Id of profile' })
+    async uploadPhoto( @Param('id') profileId, @UploadedFile() file) {
+        await this.service.updatePhoto(process.env.URL + '/' + file.path, profileId);
+        return process.env.URL + '/' + file.path;
     }
 
     @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
@@ -77,7 +115,7 @@ export class ProfileController implements CrudController<Profile> {
         return this.base.createOneBase(req, dto);
     }
 
-    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard, ProfilesGuard)
+    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
     @ApiBearerAuth()
     @Override('updateOneBase')
     @Roles(UserRole.User, UserRole.Moderator)
@@ -85,6 +123,7 @@ export class ProfileController implements CrudController<Profile> {
         @ParsedRequest() req: CrudRequest,
         @ParsedBody() dto: UpdateProfileDTO,
     ) {
+        delete dto.roles;
         return this.base.updateOneBase(req, Object.assign(new Profile(), dto));
     }
 
@@ -96,6 +135,7 @@ export class ProfileController implements CrudController<Profile> {
         @ParsedRequest() req: CrudRequest,
         @ParsedBody() dto: UpdateProfileDTO,
     ) {
+        delete dto.roles;
         return this.base.updateOneBase(req, Object.assign(new Profile(), dto));
     }
 }

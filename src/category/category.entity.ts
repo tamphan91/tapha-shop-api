@@ -1,5 +1,5 @@
 import { Base } from '../common/base.entity';
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity()
 export class Category extends Base {
@@ -17,4 +17,11 @@ export class Category extends Base {
 
     @Column()
     url: string;
+
+    @ManyToOne(type => Category, category => category.childCategories)
+    parentCategory: Category;
+
+    @OneToMany(type => Category, category => category.parentCategory)
+    childCategories: Category[];
+
 }

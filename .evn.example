@@ -12,7 +12,8 @@ DB_DATABASE=d654lllskp01s8
 DB_SYNCHRONIZE=true
 SESSION_DRIVER=cookie
 HASH_DRIVER=bcrypt
-
+URL=https://tapha-shop-api.herokuapp.com
+CLIENT_URL=https://tapha-shop.herokuapp.com
 
 SWAGGER_SCHEMA=https
 
