@@ -17,8 +17,3 @@ CLIENT_URL=https://tapha-shop.herokuapp.com
 
 SWAGGER_SCHEMA=https
 
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-MAIL_USERNAME=pageworth.helper@gmail.com
-MAIL_PASSWORD=0chin0nam
-MAIL_NAME=Crashzone Support
