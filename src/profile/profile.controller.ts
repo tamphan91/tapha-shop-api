@@ -1,4 +1,4 @@
-import { Controller, UseGuards, UseInterceptors, ClassSerializerInterceptor, Post, UploadedFile, Param, Body } from '@nestjs/common';
+import { Controller, UseGuards, UseInterceptors, ClassSerializerInterceptor, Post, UploadedFile, Param, Body, Inject } from '@nestjs/common';
 import { ApiUseTags, ApiBearerAuth, ApiImplicitFile, ApiImplicitParam, ApiImplicitBody, ApiOperation } from '@nestjs/swagger';
 import { ProfileService } from './profile.service';
 import { Crud, CrudController, Override, ParsedRequest, CrudRequest, ParsedBody, CreateManyDto } from '@nestjsx/crud';
@@ -13,6 +13,7 @@ import { PermissionsGuard } from '../guard/permissions.guard';
 import { ProfilesGuard } from '../guard/profiles.guard';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { cloudinaryV2, getFileNameFromPath } from '../common/helper';
 
 @Crud({
     model: {
@@ -46,7 +47,7 @@ export class ProfileController implements CrudController<Profile> {
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @ApiBearerAuth()
     @ApiImplicitParam({ name: 'id', required: true, description: 'Id of profile' })
-    @ApiImplicitBody({name: 'roles', type: Object, description: 'Array of UserRole, example: {"roles": ["Admin", "Moderator", "User"]}'})
+    @ApiImplicitBody({ name: 'roles', type: Object, description: 'Array of UserRole, example: {"roles": ["Admin", "Moderator", "User"]}' })
     async updateRole(
         @Body('roles') roles: UserRole[],
         @Param('id') profileId,
@@ -71,9 +72,16 @@ export class ProfileController implements CrudController<Profile> {
     @ApiBearerAuth()
     @ApiImplicitFile({ name: 'file', required: true, description: 'Photo of profile' })
     @ApiImplicitParam({ name: 'id', required: true, description: 'Id of profile' })
-    async uploadPhoto( @Param('id') profileId, @UploadedFile() file) {
-        await this.service.updatePhoto(process.env.URL + '/' + file.path, profileId);
-        return process.env.URL + '/' + file.path;
+    async uploadPhoto(@Param('id') profileId, @UploadedFile() file) {
+        const profile = await this.service.findOne(profileId);
+        if (profile.photo) {
+            await cloudinaryV2.uploader.destroy(getFileNameFromPath(profile.photo));
+        }
+        const result = await cloudinaryV2.uploader.upload(file.path);
+        profile.photo = result.secure_url;
+        await profile.save();
+        // await this.service.updatePhoto(result.secure_url, profileId);
+        return result.secure_url;
     }
 
     @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)

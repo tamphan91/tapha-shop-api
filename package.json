@@ -31,6 +31,7 @@
     "@nestjsx/crud-typeorm": "^4.2.0",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.9.1",
+    "cloudinary": "^1.15.0",
     "csurf": "^1.10.0",
     "dotenv": "^8.1.0",
     "express-rate-limit": "^5.0.0",

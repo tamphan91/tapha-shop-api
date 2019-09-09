@@ -16,8 +16,8 @@ import { Roles } from '../decorator/custom.decorator';
         exclude: ['deleteOneBase'],
     },
 })
-@ApiUseTags('Product')
-@Controller('Product')
+@ApiUseTags('product')
+@Controller('product')
 export class ProductController implements CrudController<Product> {
     constructor(public service: ProductService) { }
 

@@ -15,10 +15,10 @@ export class Product extends Base {
     @Column()
     originalPrice: number;
 
-    @ApiModelProperty({ example: 'Jean', description: 'Jean' })
-    @Column({nullable: true})
-    @IsOptional()
-    discountPercent: Discount;
+    // @ApiModelProperty({ example: Discount.SALE10, description: 'Jean' })
+    // @Column({nullable: true})
+    // @IsOptional()
+    // discountPercent: Discount;
 
     @Column({
         type: 'enum',
@@ -36,13 +36,14 @@ export class Product extends Base {
     @IsNumber()
     categoryId: number;
 
-    @Column({
-        type: 'enum',
-        enum: ProductStatus,
-        default: [ProductStatus.New],
-        array: true,
-    })
-    status: ProductStatus[];
+    // @Column({
+    //     type: 'enum',
+    //     enum: ProductStatus,
+    //     default: [ProductStatus.New],
+    //     array: true,
+    // })
+    // @ApiModelProperty({ enum: Object.keys(ProductStatus) })
+    // status: ProductStatus[];
 
     @ApiModelProperty({ example: ['url1', 'url2', 'url3'], description: 'The urls of product' })
     @Column('simple-array')
