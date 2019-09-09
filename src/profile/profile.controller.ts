@@ -13,7 +13,7 @@ import { PermissionsGuard } from '../guard/permissions.guard';
 import { ProfilesGuard } from '../guard/profiles.guard';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { cloudinaryV2, getFileNameFromPath } from '../common/helper';
+import { cloudinaryV2, getFileNameFromPath, deleteFile } from '../common/helper';
 
 @Crud({
     model: {
@@ -75,11 +75,12 @@ export class ProfileController implements CrudController<Profile> {
     async uploadPhoto(@Param('id') profileId, @UploadedFile() file) {
         const profile = await this.service.findOne(profileId);
         if (profile.photo) {
-            await cloudinaryV2.uploader.destroy(getFileNameFromPath(profile.photo));
+            cloudinaryV2.uploader.destroy(getFileNameFromPath(profile.photo));
         }
         const result = await cloudinaryV2.uploader.upload(file.path);
+        deleteFile(file.path);
         profile.photo = result.secure_url;
-        await profile.save();
+        profile.save();
         // await this.service.updatePhoto(result.secure_url, profileId);
         return result.secure_url;
     }

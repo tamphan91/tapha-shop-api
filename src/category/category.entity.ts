@@ -22,8 +22,9 @@ export class Category extends Base {
     @Column()
     title2: string;
 
-    @ApiModelProperty({ example: 'url', description: 'url' })
-    @Column()
+    // @ApiModelProperty({ example: 'url', description: 'url' })
+    // @Column()
+    @Column('text', {nullable: true})
     url: string;
 
     @ApiModelProperty({ example: 5, description: 'The parentCategoryId of the Category' })
