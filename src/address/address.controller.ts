@@ -1,21 +1,19 @@
-import { UserService } from './user.service';
-import { User } from './user.entity';
 import { Controller, UseGuards } from '@nestjs/common';
-import { Crud, CrudController, Override, CrudRequest, ParsedRequest, ParsedBody, CreateManyDto } from '@nestjsx/crud';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
-import { Roles } from '../decorator/custom.decorator';
+import { CrudController, Crud, ParsedRequest, ParsedBody, CrudRequest, Override, CreateManyDto } from '@nestjsx/crud';
+import { Address } from './address.entity';
+import { AddressService } from './address.service';
+import { UserRole } from '../common/constants';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../guard/roles.guard';
-import { UserRole } from '../common/constants';
-import { UpdateUserDTO } from './update-user.dto';
+import { Roles } from '../decorator/custom.decorator';
 import { PermissionsGuard } from '../guard/permissions.guard';
 
 @Crud({
     model: {
-        type: User,
+        type: Address,
     },
     query: {
-        exclude: ['password'],
         join: {
             profile: {
                 eager: false,
@@ -26,13 +24,12 @@ import { PermissionsGuard } from '../guard/permissions.guard';
         exclude: ['deleteOneBase'],
     },
 })
-@ApiUseTags('user')
-@Controller('user')
-@Roles(UserRole.Admin)
-export class UserController implements CrudController<User> {
-    constructor(public service: UserService) { }
+@ApiUseTags('address')
+@Controller('address')
+export class AddressController implements CrudController<Address> {
+    constructor(public service: AddressService) { }
 
-    get base(): CrudController<User> {
+    get base(): CrudController<Address> {
         return this;
     }
 
@@ -40,7 +37,7 @@ export class UserController implements CrudController<User> {
     @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
     @ApiBearerAuth()
     @Override('getManyBase')
-    getUsers(
+    getAddresses(
         @ParsedRequest() req: CrudRequest,
     ) {
         return this.base.getManyBase(req);
@@ -49,18 +46,29 @@ export class UserController implements CrudController<User> {
     @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
     @ApiBearerAuth()
     @Override('createManyBase')
-    createUsers(
+    createAddresses(
         @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: CreateManyDto<User>,
+        @ParsedBody() dto: CreateManyDto<Address>,
     ) {
         return this.base.createManyBase(req, dto);
+    }
+
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @ApiBearerAuth()
+    @Roles(UserRole.User, UserRole.Moderator)
+    @Override()
+    createOne(
+        @ParsedRequest() req: CrudRequest,
+        @ParsedBody() dto: Address,
+    ) {
+        return this.base.createOneBase(req, dto);
     }
 
     @Roles(UserRole.User, UserRole.Moderator)
     @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
     @ApiBearerAuth()
     @Override('getOneBase')
-    getUser(
+    getAddress(
         @ParsedRequest() req: CrudRequest,
     ) {
         return this.base.getOneBase(req);
@@ -70,21 +78,21 @@ export class UserController implements CrudController<User> {
     @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
     @ApiBearerAuth()
     @Override('updateOneBase')
-    updateUser(
+    updateAddress(
         @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: UpdateUserDTO,
+        @ParsedBody() dto: Address,
     ) {
-        return this.base.updateOneBase(req, Object.assign(new User(), dto));
+        return this.base.updateOneBase(req, dto);
     }
 
     @Roles(UserRole.User, UserRole.Moderator)
     @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
     @ApiBearerAuth()
     @Override('replaceOneBase')
-    replaceUser(
+    replaceAddress(
         @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: UpdateUserDTO,
+        @ParsedBody() dto: Address,
     ) {
-        return this.base.replaceOneBase(req, Object.assign(new User(), dto));
+        return this.base.updateOneBase(req, dto);
     }
 }

@@ -19,7 +19,7 @@ export class UpdateProfileDTO extends Base {
     @IsOptional()
     readonly dateOfBirth: string;
 
-    @ApiModelProperty({ enum: Object.keys(Gender), required: false })
+    @ApiModelProperty({ enum: [Gender.Famale, Gender.Male, Gender.Other], required: false })
     gender: Gender;
 
     readonly photo: string;

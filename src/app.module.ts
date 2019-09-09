@@ -7,6 +7,9 @@ import { UserModule } from './user/user.module';
 import { ProfileController } from './profile/profile.controller';
 import { ProfileModule } from './profile/profile.module';
 import 'dotenv/config';
+import { CategoryModule } from './category/category.module';
+import { AddressModule } from './address/address.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -22,7 +25,7 @@ import 'dotenv/config';
       logging: true,
       ssl: true,
     }),
-    AuthModule, UserModule, ProfileModule],
+    AuthModule, UserModule, ProfileModule, CategoryModule, ProductModule, AddressModule],
   controllers: [AppController, ProfileController],
   providers: [AppService],
 })

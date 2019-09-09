@@ -39,16 +39,20 @@ export class Profile extends Base {
 
     @Column({
         type: 'enum',
-        enum: Gender,
+        enum: [Gender.Famale, Gender.Male, Gender.Other],
     })
     @IsString()
-    @ApiModelProperty({ enum: Object.keys(Gender) })
+    @ApiModelProperty({ enum: [Gender.Famale, Gender.Male, Gender.Other] })
     gender: Gender;
 
     @Column('text', {nullable: true})
     // @ApiModelProperty({ example: 'abc.jpeg', description: 'The User photo' })
     // @IsString()
     photo: string;
+
+    @Column('text', {nullable: true})
+    @ApiModelProperty({ example: '0905254425', description: 'The User phone' })
+    phone: string;
 
     @Column({
         type: 'enum',

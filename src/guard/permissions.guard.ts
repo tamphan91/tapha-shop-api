@@ -2,6 +2,7 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { UserRole } from '../common/constants';
 import { getRepository } from 'typeorm';
 import { Profile } from '../profile/profile.entity';
+import { Address } from '../address/address.entity';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -28,6 +29,14 @@ export class PermissionsGuard implements CanActivate {
         isAllow = true;
       } else {
         const profile = await getRepository(Profile).findOne(id);
+        isAllow = !profile.roles.includes(UserRole.Admin) && roles.includes(UserRole.Moderator);
+      }
+    } else if (request.originalUrl.indexOf('/address/') === 0) {
+      const address = await getRepository(Address).findOne(id);
+      if (request.user.payload.profile.id === address.profileId) {
+        isAllow = true;
+      } else {
+        const profile = await getRepository(Profile).findOne(address.profileId);
         isAllow = !profile.roles.includes(UserRole.Admin) && roles.includes(UserRole.Moderator);
       }
     }
