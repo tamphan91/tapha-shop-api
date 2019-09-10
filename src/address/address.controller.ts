@@ -24,8 +24,8 @@ import { PermissionsGuard } from '../guard/permissions.guard';
         exclude: ['deleteOneBase'],
     },
 })
-@ApiUseTags('address')
-@Controller('address')
+@ApiUseTags('addresses')
+@Controller('addresses')
 export class AddressController implements CrudController<Address> {
     constructor(public service: AddressService) { }
 

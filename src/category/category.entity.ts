@@ -25,7 +25,7 @@ export class Category extends Base {
     // @ApiModelProperty({ example: 'url', description: 'url' })
     // @Column()
     @Column('text', {nullable: true})
-    url: string;
+    image: string;
 
     @ApiModelProperty({ example: 5, description: 'The parentCategoryId of the Category' })
     @IsNumber()

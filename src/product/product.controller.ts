@@ -12,12 +12,23 @@ import { Roles } from '../decorator/custom.decorator';
     model: {
         type: Product,
     },
+    query: {
+        join: {
+            category: {
+                eager: false,
+            },
+            details: {
+                eager: false,
+            },
+        },
+    },
     routes: {
         exclude: ['deleteOneBase'],
     },
 })
-@ApiUseTags('product')
-@Controller('product')
+@ApiUseTags('products')
+@Controller('products')
+@Roles(UserRole.Admin, UserRole.Moderator)
 export class ProductController implements CrudController<Product> {
     constructor(public service: ProductService) { }
 
@@ -28,7 +39,6 @@ export class ProductController implements CrudController<Product> {
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @ApiBearerAuth()
     @Override('createManyBase')
-    @Roles(UserRole.User, UserRole.Moderator)
     createProducts(
         @ParsedRequest() req: CrudRequest,
         @ParsedBody() dto: CreateManyDto<Product>,
@@ -38,7 +48,6 @@ export class ProductController implements CrudController<Product> {
 
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @ApiBearerAuth()
-    @Roles(UserRole.User, UserRole.Moderator)
     @Override()
     createOne(
         @ParsedRequest() req: CrudRequest,
@@ -50,7 +59,6 @@ export class ProductController implements CrudController<Product> {
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @ApiBearerAuth()
     @Override('updateOneBase')
-    @Roles(UserRole.User, UserRole.Moderator)
     updateProduct(
         @ParsedRequest() req: CrudRequest,
         @ParsedBody() dto: Product,
@@ -61,7 +69,6 @@ export class ProductController implements CrudController<Product> {
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @ApiBearerAuth()
     @Override('replaceOneBase')
-    @Roles(UserRole.Admin, UserRole.Moderator)
     replaceProduct(
         @ParsedRequest() req: CrudRequest,
         @ParsedBody() dto: Product,

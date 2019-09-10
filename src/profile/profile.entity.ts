@@ -6,6 +6,7 @@ import { MyMaxDate } from '../validator/MyMaxDate.validator';
 import { User } from '../user/user.entity';
 import { UserRole, Gender } from '../common/constants';
 import { Expose } from 'class-transformer';
+import { Address } from '../address/address.entity';
 
 @Entity()
 export class Profile extends Base {
@@ -65,4 +66,7 @@ export class Profile extends Base {
 
     @OneToOne(type => User, user => user.profile) // specify inverse side as a second parameter
     user: User;
+
+    @OneToOne(type => Address, address => address.profile) // specify inverse side as a second parameter
+    address: Address;
 }

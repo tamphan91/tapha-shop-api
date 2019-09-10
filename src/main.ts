@@ -15,6 +15,8 @@ import { UserRole, Gender } from './common/constants';
 import { CategoryModule } from './category/category.module';
 import { AddressModule } from './address/address.module';
 import { ProductModule } from './product/product.module';
+import { SwatchModule } from './swatch/swatch.module';
+import { DetailModule } from './detail/detail.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -51,7 +53,7 @@ async function bootstrap() {
     .build();
 
   const authDocument = SwaggerModule.createDocument(app, options, {
-    include: [AuthModule, UserModule, ProfileModule, CategoryModule, ProductModule, AddressModule],
+    include: [AuthModule, UserModule, ProfileModule, CategoryModule, ProductModule, AddressModule, SwatchModule, DetailModule],
   });
   SwaggerModule.setup('api', app, authDocument);
 

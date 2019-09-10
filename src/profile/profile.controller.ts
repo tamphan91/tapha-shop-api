@@ -10,7 +10,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UserRole } from '../common/constants';
 import { UpdateProfileDTO } from '../profile/update-profile.dto';
 import { PermissionsGuard } from '../guard/permissions.guard';
-import { ProfilesGuard } from '../guard/profiles.guard';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { cloudinaryV2, getFileNameFromPath, deleteFile } from '../common/helper';
@@ -23,6 +22,10 @@ import { cloudinaryV2, getFileNameFromPath, deleteFile } from '../common/helper'
         join: {
             user: {
                 eager: false,
+                exclude: ['password'],
+            },
+            address: {
+                eager: false,
             },
         },
     },
@@ -30,8 +33,8 @@ import { cloudinaryV2, getFileNameFromPath, deleteFile } from '../common/helper'
         exclude: ['deleteOneBase'],
     },
 })
-@ApiUseTags('profile')
-@Controller('profile')
+@ApiUseTags('profiles')
+@Controller('profiles')
 @Roles(UserRole.Admin)
 @UseInterceptors(ClassSerializerInterceptor)
 export class ProfileController implements CrudController<Profile> {
@@ -58,7 +61,7 @@ export class ProfileController implements CrudController<Profile> {
 
     @Post(':id/updatePhoto')
     @ApiOperation({ description: 'Update profile photo by profileId', title: 'Update profile photo' })
-    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard, ProfilesGuard)
+    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
     @Roles(UserRole.User, UserRole.Moderator)
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({
@@ -136,7 +139,7 @@ export class ProfileController implements CrudController<Profile> {
         return this.base.updateOneBase(req, Object.assign(new Profile(), dto));
     }
 
-    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard, ProfilesGuard)
+    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
     @ApiBearerAuth()
     @Override('replaceOneBase')
     @Roles(UserRole.User, UserRole.Moderator)

@@ -40,3 +40,31 @@ export enum Discount {
     SALE30 = 30,
     SALE50 = 50,
 }
+
+export enum PrimaryTopSize {
+    XXS = 'XXS',
+    XS = 'XS',
+    S = 'S',
+    M = 'M',
+    L = 'L',
+    XL = 'XL',
+    XXL = 'XXL',
+}
+
+export enum PrimaryBottomSize {
+    S28 = 28,
+    S29 = 29,
+    S30 = 30,
+    S31 = 31,
+    S32 = 32,
+    S33 = 33,
+}
+
+export enum SecondarySize {
+    L28 = 28,
+    L29 = 29,
+    L30 = 30,
+    L31 = 31,
+    L32 = 32,
+    L33 = 33,
+}

@@ -26,8 +26,8 @@ import { PermissionsGuard } from '../guard/permissions.guard';
         exclude: ['deleteOneBase'],
     },
 })
-@ApiUseTags('user')
-@Controller('user')
+@ApiUseTags('users')
+@Controller('users')
 @Roles(UserRole.Admin)
 export class UserController implements CrudController<User> {
     constructor(public service: UserService) { }

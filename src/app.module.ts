@@ -10,6 +10,8 @@ import 'dotenv/config';
 import { CategoryModule } from './category/category.module';
 import { AddressModule } from './address/address.module';
 import { ProductModule } from './product/product.module';
+import { SwatchModule } from './swatch/swatch.module';
+import { DetailModule } from './detail/detail.module';
 
 @Module({
   imports: [
@@ -25,7 +27,7 @@ import { ProductModule } from './product/product.module';
       logging: true,
       ssl: true,
     }),
-    AuthModule, UserModule, ProfileModule, CategoryModule, ProductModule, AddressModule],
+    AuthModule, UserModule, ProfileModule, CategoryModule, ProductModule, AddressModule, SwatchModule, DetailModule],
   controllers: [AppController, ProfileController],
   providers: [AppService],
 })

@@ -16,7 +16,7 @@ import { getRepository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
-  private readonly JWT_SECRET_KEY = jwtConstants.secret; // <- replace this with your secret key
+  // private readonly JWT_SECRET_KEY = jwtConstants.secret; // <- replace this with your secret key
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
@@ -81,9 +81,10 @@ export class AuthService {
         const userProfileReturn = await this.profileService.findOne(google.profileId);
         payload.profile = userProfileReturn;
       }
-      // tslint:disable-next-line:no-console
-      console.log('payload', payload);
-      const jwt: string = sign(payload, this.JWT_SECRET_KEY, { expiresIn: 3600 });
+      // // tslint:disable-next-line:no-console
+      // console.log('payload', payload);
+      // const jwt: string = sign(payload, this.JWT_SECRET_KEY, { expiresIn: 3600 });
+      const jwt: string = this.jwtService.sign(payload);
       return jwt;
     } catch (err) {
       throw new InternalServerErrorException('validateOAuthLogin', err.message);

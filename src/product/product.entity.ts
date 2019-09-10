@@ -1,9 +1,10 @@
 import { Base } from '../common/base.entity';
 import { Entity, Column, ManyToOne, OneToMany, JoinColumn, OneToOne } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
-import { Discount, Gender, ProductStatus } from '../common/constants';
+import { IsNumber, IsString } from 'class-validator';
+import { Gender } from '../common/constants';
 import { Category } from '../category/category.entity';
+import { Detail } from '../detail/detail.entity';
 
 @Entity()
 export class Product extends Base {
@@ -14,11 +15,6 @@ export class Product extends Base {
     @ApiModelProperty({ example: 'Jean', description: 'Jean' })
     @Column()
     originalPrice: number;
-
-    // @ApiModelProperty({ example: Discount.SALE10, description: 'Jean' })
-    // @Column({nullable: true})
-    // @IsOptional()
-    // discountPercent: Discount;
 
     @Column({
         type: 'enum',
@@ -36,16 +32,7 @@ export class Product extends Base {
     @IsNumber()
     categoryId: number;
 
-    // @Column({
-    //     type: 'enum',
-    //     enum: ProductStatus,
-    //     default: [ProductStatus.New],
-    //     array: true,
-    // })
-    // @ApiModelProperty({ enum: Object.keys(ProductStatus) })
-    // status: ProductStatus[];
-
-    @ApiModelProperty({ example: ['url1', 'url2', 'url3'], description: 'The urls of product' })
-    @Column('simple-array')
-    url: string[];
+    @OneToMany(type => Detail, category => category.product)
+    @JoinColumn()
+    details: Detail[];
 }

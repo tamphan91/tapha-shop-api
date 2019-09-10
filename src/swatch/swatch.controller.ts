@@ -1,8 +1,8 @@
 import { Controller, UseGuards, Post, UseInterceptors, Param, UploadedFile } from '@nestjs/common';
 import { ApiUseTags, ApiBearerAuth, ApiOperation, ApiImplicitFile, ApiImplicitParam } from '@nestjs/swagger';
 import { CrudController, Crud, ParsedRequest, ParsedBody, CrudRequest, Override, CreateManyDto } from '@nestjsx/crud';
-import { Category } from './category.entity';
-import { CategoryService } from './category.service';
+import { Swatch } from './swatch.entity';
+import { SwatchService } from './swatch.service';
 import { UserRole } from '../common/constants';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../guard/roles.guard';
@@ -14,17 +14,11 @@ import { getFileNameFromPath, cloudinaryV2, deleteFile } from '../common/helper'
 
 @Crud({
     model: {
-        type: Category,
+        type: Swatch,
     },
     query: {
         join: {
-            parentCategory: {
-                eager: false,
-            },
-            childCategories: {
-                eager: false,
-            },
-            products: {
+            details: {
                 eager: false,
             },
         },
@@ -33,18 +27,18 @@ import { getFileNameFromPath, cloudinaryV2, deleteFile } from '../common/helper'
         exclude: ['deleteOneBase'],
     },
 })
-@ApiUseTags('categories')
-@Controller('categories')
+@ApiUseTags('swatches')
+@Controller('swatches')
 @Roles(UserRole.Admin, UserRole.Moderator)
-export class CategoryController implements CrudController<Category> {
-    constructor(public service: CategoryService) { }
+export class SwatchController implements CrudController<Swatch> {
+    constructor(public service: SwatchService) { }
 
-    get base(): CrudController<Category> {
+    get base(): CrudController<Swatch> {
         return this;
     }
 
     @Post(':id/updatePhoto')
-    @ApiOperation({ description: 'Update category photo by profileId', title: 'Update category photo' })
+    @ApiOperation({ description: 'Update Swatch photo by profileId', title: 'Update Swatch photo' })
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({
@@ -56,17 +50,17 @@ export class CategoryController implements CrudController<Category> {
         }),
     }))
     @ApiBearerAuth()
-    @ApiImplicitFile({ name: 'file', required: true, description: 'Photo of Category' })
-    @ApiImplicitParam({ name: 'id', required: true, description: 'Id of Category' })
-    async uploadPhoto(@Param('id') categoryId, @UploadedFile() file) {
-        const category = await this.service.findOne(categoryId);
-        if (category.image) {
-            cloudinaryV2.uploader.destroy(getFileNameFromPath(category.image));
+    @ApiImplicitFile({ name: 'file', required: true, description: 'Photo of Swatch' })
+    @ApiImplicitParam({ name: 'id', required: true, description: 'Id of Swatch' })
+    async uploadPhoto(@Param('id') SwatchId, @UploadedFile() file) {
+        const swatch = await this.service.findOne(SwatchId);
+        if (swatch.image) {
+            cloudinaryV2.uploader.destroy(getFileNameFromPath(swatch.image));
         }
         const result = await cloudinaryV2.uploader.upload(file.path);
         deleteFile(file.path);
-        category.image = result.secure_url;
-        category.save();
+        swatch.image = result.secure_url;
+        swatch.save();
         return result.secure_url;
     }
 
@@ -75,7 +69,7 @@ export class CategoryController implements CrudController<Category> {
     @Override('createManyBase')
     createCategories(
         @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: CreateManyDto<Category>,
+        @ParsedBody() dto: CreateManyDto<Swatch>,
     ) {
         return this.base.createManyBase(req, dto);
     }
@@ -85,7 +79,7 @@ export class CategoryController implements CrudController<Category> {
     @Override()
     createOne(
         @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: Category,
+        @ParsedBody() dto: Swatch,
     ) {
         return this.base.createOneBase(req, dto);
     }
@@ -93,9 +87,9 @@ export class CategoryController implements CrudController<Category> {
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @ApiBearerAuth()
     @Override('updateOneBase')
-    updateCategory(
+    updateSwatch(
         @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: Category,
+        @ParsedBody() dto: Swatch,
     ) {
         return this.base.updateOneBase(req, dto);
     }
@@ -103,9 +97,9 @@ export class CategoryController implements CrudController<Category> {
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @ApiBearerAuth()
     @Override('replaceOneBase')
-    replaceCategory(
+    replaceSwatch(
         @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: Category,
+        @ParsedBody() dto: Swatch,
     ) {
         return this.base.updateOneBase(req, dto);
     }
