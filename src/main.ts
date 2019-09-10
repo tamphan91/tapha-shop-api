@@ -45,10 +45,10 @@ async function bootstrap() {
   const schema = process.env.SWAGGER_SCHEMA === 'https' ? 'https' : 'http';
 
   const options = new DocumentBuilder()
-    .setTitle('Tapha example')
+    .setTitle('Tapha api')
     .setDescription('The taphas API description')
     .setSchemes(schema)
-    .setVersion('1.0')
+    .setVersion('v36')
     .addBearerAuth()
     .build();
 

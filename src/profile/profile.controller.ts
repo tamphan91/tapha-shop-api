@@ -46,7 +46,7 @@ export class ProfileController implements CrudController<Profile> {
     }
 
     @Post(':id/updateRoles')
-    @ApiOperation({ description: 'Update user role by profileId', title: 'Update user role' })
+    @ApiOperation({ description: 'Update user role by profileId', title: 'Update user role (Admin only)' })
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @ApiBearerAuth()
     @ApiImplicitParam({ name: 'id', required: true, description: 'Id of profile' })

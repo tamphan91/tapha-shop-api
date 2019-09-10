@@ -2,7 +2,7 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { IsString, IsEmail } from 'class-validator';
 
 export class LoginUserDTO {
-    @ApiModelProperty({ example: 'tamphan@gmail.com', description: 'The email of the User' })
+    @ApiModelProperty({ example: 'tamphan91@gmail.com', description: 'The email of the User' })
     @IsEmail()
     readonly email: string;
 
