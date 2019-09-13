@@ -20,6 +20,8 @@ import { ProductDetailModule } from './product_detail/productDetail.module';
 import { StockModule } from './stock/stock.module';
 import { OrderModule } from './order/order.module';
 import { OrderDetailModule } from './order_detail/orderDetail.module';
+import { InvoiceModule } from './invoice/invoice.module';
+import { Stock } from './stock/stock.entity';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -35,6 +37,12 @@ async function bootstrap() {
     await userRepository.save(adminUserToSave);
     Logger.log('Inited admin user successfull!');
   }
+
+  // const stock = await getRepository(Stock).findOne({id: 1}, {relations: ['productDetail', 'productDetail.product']});
+  // // tslint:disable-next-line:no-console
+  // console.log('originalPrice: ', stock.productDetail.product.originalPrice);
+  // // tslint:disable-next-line:no-console
+  // console.log('discountPercent: ', stock.productDetail.discountPercent);
   /**
    * createDocument(application, configurationOptions, extraOptions);
    *
@@ -57,7 +65,7 @@ async function bootstrap() {
 
   const authDocument = SwaggerModule.createDocument(app, options, {
     include: [AuthModule, UserModule, ProfileModule, CategoryModule, ProductModule, AddressModule,
-       SwatchModule, ProductDetailModule, StockModule, OrderModule, OrderDetailModule],
+       SwatchModule, ProductDetailModule, StockModule, OrderModule, OrderDetailModule, InvoiceModule],
   });
   SwaggerModule.setup('api', app, authDocument);
 

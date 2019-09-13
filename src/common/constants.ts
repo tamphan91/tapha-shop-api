@@ -23,6 +23,11 @@ export enum Provider {
     FACEBOOK = 'facebook',
 }
 
+export enum Currency {
+    USD = 'usd',
+    VND = 'vnd',
+}
+
 export enum ProductStatus {
     Sale = 'Sale',
     New = 'New',
@@ -41,11 +46,8 @@ export enum OrderStatus {
 }
 
 export enum InvoiceStatus {
-    Draft = 'Draft',
     Open = 'Open',
     Paid = 'Paid',
-    Uncollectible = 'Uncollectible',
-    Void = 'Void',
 }
 
 export enum Discount {

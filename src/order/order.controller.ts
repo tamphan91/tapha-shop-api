@@ -7,6 +7,7 @@ import { UserRole } from '../common/constants';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../guard/roles.guard';
 import { Roles } from '../decorator/custom.decorator';
+import { PermissionsGuard } from '../guard/permissions.guard';
 
 @Crud({
     model: {
@@ -34,8 +35,9 @@ import { Roles } from '../decorator/custom.decorator';
 })
 @ApiUseTags('orders')
 @Controller('orders')
-@Roles(UserRole.Admin, UserRole.Moderator)
+@Roles(UserRole.Admin)
 @ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
 export class OrderController implements CrudController<Order> {
     constructor(public service: OrderService) { }
 
@@ -43,9 +45,9 @@ export class OrderController implements CrudController<Order> {
         return this;
     }
 
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    // @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Override('createManyBase')
-    createCategories(
+    createOrders(
         @ParsedRequest() req: CrudRequest,
         @ParsedBody() dto: CreateManyDto<Order>,
     ) {
@@ -53,12 +55,23 @@ export class OrderController implements CrudController<Order> {
     }
 
     @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(UserRole.User, UserRole.Moderator)
     @Override()
     createOne(
         @ParsedRequest() req: CrudRequest,
         @ParsedBody() dto: Order,
     ) {
         return this.base.createOneBase(req, dto);
+    }
+
+    // @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    @ApiBearerAuth()
+    @Override('getOneBase')
+    @Roles(UserRole.User, UserRole.Moderator)
+    getUser(
+        @ParsedRequest() req: CrudRequest,
+    ) {
+        return this.base.getOneBase(req);
     }
 
     // @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -70,7 +83,8 @@ export class OrderController implements CrudController<Order> {
     //     return this.base.updateOneBase(req, dto);
     // }
 
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    // @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    @Roles(UserRole.User, UserRole.Moderator)
     @Override('replaceOneBase')
     replaceOrder(
         @ParsedRequest() req: CrudRequest,

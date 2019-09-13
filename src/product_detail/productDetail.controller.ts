@@ -24,7 +24,7 @@ import { getFileNameFromPath, cloudinaryV2, deleteFile } from '../common/helper'
             stocks: {
                 eager: false,
             },
-            purchases: {
+            orders: {
                 eager: false,
             },
             swatch: {

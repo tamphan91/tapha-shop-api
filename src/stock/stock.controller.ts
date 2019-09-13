@@ -17,7 +17,7 @@ import { Roles } from '../decorator/custom.decorator';
             productDetail: {
                 eager: false,
             },
-            purchaseDetails: {
+            orderDetails: {
                 eager: false,
             },
         },
@@ -39,7 +39,7 @@ export class StockController implements CrudController<Stock> {
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @ApiBearerAuth()
     @Override('createManyBase')
-    createCategories(
+    createStocks(
         @ParsedRequest() req: CrudRequest,
         @ParsedBody() dto: CreateManyDto<Stock>,
     ) {
@@ -48,6 +48,7 @@ export class StockController implements CrudController<Stock> {
 
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @ApiBearerAuth()
+    @Roles(UserRole.Moderator)
     @Override()
     createOne(
         @ParsedRequest() req: CrudRequest,
@@ -69,6 +70,7 @@ export class StockController implements CrudController<Stock> {
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @ApiBearerAuth()
     @Override('replaceOneBase')
+    @Roles(UserRole.Moderator)
     replaceStock(
         @ParsedRequest() req: CrudRequest,
         @ParsedBody() dto: Stock,

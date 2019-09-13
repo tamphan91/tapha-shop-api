@@ -29,6 +29,9 @@ import { cloudinaryV2, getFileNameFromPath, deleteFile } from '../common/helper'
             address: {
                 eager: false,
             },
+            orders: {
+                eager: false,
+            },
         },
     },
     routes: {
@@ -133,20 +136,20 @@ export class ProfileController implements CrudController<Profile> {
         return result.secure_url;
     }
 
-    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
     @ApiBearerAuth()
     @Override('getManyBase')
     @Roles(UserRole.Moderator)
-    getUsers(
+    getProfiles(
         @ParsedRequest() req: CrudRequest,
     ) {
         return this.base.getManyBase(req);
     }
 
-    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
     @ApiBearerAuth()
     @Override('createManyBase')
-    createUsers(
+    createProfiles(
         @ParsedRequest() req: CrudRequest,
         @ParsedBody() dto: CreateManyDto<Profile>,
     ) {
@@ -157,7 +160,7 @@ export class ProfileController implements CrudController<Profile> {
     @ApiBearerAuth()
     @Override('getOneBase')
     @Roles(UserRole.User, UserRole.Moderator)
-    getUser(
+    getProfile(
         @ParsedRequest() req: CrudRequest,
     ) {
         return this.base.getOneBase(req);

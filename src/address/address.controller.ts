@@ -27,6 +27,7 @@ import { PermissionsGuard } from '../guard/permissions.guard';
 @ApiUseTags('addresses')
 @Controller('addresses')
 @ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
 export class AddressController implements CrudController<Address> {
     constructor(public service: AddressService) { }
 
@@ -35,7 +36,7 @@ export class AddressController implements CrudController<Address> {
     }
 
     @Roles(UserRole.Moderator)
-    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    // @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
     @Override('getManyBase')
     getAddresses(
         @ParsedRequest() req: CrudRequest,
@@ -43,7 +44,7 @@ export class AddressController implements CrudController<Address> {
         return this.base.getManyBase(req);
     }
 
-    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    // @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
     @Override('createManyBase')
     createAddresses(
         @ParsedRequest() req: CrudRequest,
@@ -63,7 +64,7 @@ export class AddressController implements CrudController<Address> {
     }
 
     @Roles(UserRole.User, UserRole.Moderator)
-    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    // @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
     @Override('getOneBase')
     getAddress(
         @ParsedRequest() req: CrudRequest,
@@ -82,7 +83,7 @@ export class AddressController implements CrudController<Address> {
     // }
 
     @Roles(UserRole.User, UserRole.Moderator)
-    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    // @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
     @Override('replaceOneBase')
     replaceAddress(
         @ParsedRequest() req: CrudRequest,

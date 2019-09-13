@@ -15,6 +15,7 @@ import { ProductDetailModule } from './product_detail/productDetail.module';
 import { StockModule } from './stock/stock.module';
 import { OrderModule } from './order/order.module';
 import { OrderDetailModule } from './order_detail/orderDetail.module';
+import { InvoiceModule } from './invoice/invoice.module';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { OrderDetailModule } from './order_detail/orderDetail.module';
       ssl: true,
     }),
     AuthModule, UserModule, ProfileModule, CategoryModule, ProductModule, AddressModule,
-     SwatchModule, ProductDetailModule, StockModule, OrderModule, OrderDetailModule],
+     SwatchModule, ProductDetailModule, StockModule, OrderModule, OrderDetailModule, InvoiceModule],
   controllers: [AppController, ProfileController],
   providers: [AppService],
 })

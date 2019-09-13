@@ -10,6 +10,8 @@ export class PermissionsGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
+    // tslint:disable-next-line:no-console
+    console.log(request);
     const id = parseInt(request.params.id, null);
     if (!id) {
       return true;
@@ -25,8 +27,6 @@ export class PermissionsGuard implements CanActivate {
     if (request.originalUrl.indexOf('/users/') === 0) {
       isAllow = request.user.payload.id === id;
     } else if (request.originalUrl.indexOf('/profiles/') === 0) {
-      // tslint:disable-next-line:no-console
-      console.log(request.user.payload.profile.id);
       if (request.user.payload.profile.id === id) {
         isAllow = true;
       } else {

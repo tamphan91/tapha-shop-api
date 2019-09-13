@@ -58,8 +58,8 @@ export class ProductDetail extends Base {
     @OneToMany(type => Stock, stock => stock.productDetail, {nullable: true})
     stocks: Stock[];
 
-    @OneToMany(type => Order, order => order.productDetail, {nullable: true})
-    orders: Order[];
+    // @OneToMany(type => Order, order => order.productDetail, {nullable: true})
+    // orders: Order[];
 
     @ManyToOne(type => Swatch, swatch => swatch.productDetails, {nullable: true})
     swatch: Swatch;
