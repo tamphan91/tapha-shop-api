@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Post, UseInterceptors, Param, UploadedFile } from '@nestjs/common';
+import { Controller, UseGuards, Post, UseInterceptors, Param, UploadedFile, NotFoundException } from '@nestjs/common';
 import { ApiUseTags, ApiBearerAuth, ApiOperation, ApiImplicitFile, ApiImplicitParam } from '@nestjs/swagger';
 import { CrudController, Crud, ParsedRequest, ParsedBody, CrudRequest, Override, CreateManyDto } from '@nestjsx/crud';
 import { Swatch } from './swatch.entity';
@@ -18,13 +18,13 @@ import { getFileNameFromPath, cloudinaryV2, deleteFile } from '../common/helper'
     },
     query: {
         join: {
-            details: {
+            productDetails: {
                 eager: false,
             },
         },
     },
     routes: {
-        exclude: ['deleteOneBase'],
+        exclude: ['deleteOneBase', 'updateOneBase'],
     },
 })
 @ApiUseTags('swatches')
@@ -52,8 +52,12 @@ export class SwatchController implements CrudController<Swatch> {
     @ApiBearerAuth()
     @ApiImplicitFile({ name: 'file', required: true, description: 'Photo of Swatch' })
     @ApiImplicitParam({ name: 'id', required: true, description: 'Id of Swatch' })
-    async uploadPhoto(@Param('id') SwatchId, @UploadedFile() file) {
-        const swatch = await this.service.findOne(SwatchId);
+    async uploadPhoto(@Param('id') swatchId, @UploadedFile() file) {
+        const swatch = await this.service.findOne(swatchId);
+        if (!swatch) {
+            deleteFile(file.path);
+            throw new NotFoundException('Category with id ' + swatchId);
+        }
         if (swatch.image) {
             cloudinaryV2.uploader.destroy(getFileNameFromPath(swatch.image));
         }
@@ -84,15 +88,15 @@ export class SwatchController implements CrudController<Swatch> {
         return this.base.createOneBase(req, dto);
     }
 
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @ApiBearerAuth()
-    @Override('updateOneBase')
-    updateSwatch(
-        @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: Swatch,
-    ) {
-        return this.base.updateOneBase(req, dto);
-    }
+    // @UseGuards(AuthGuard('jwt'), RolesGuard)
+    // @ApiBearerAuth()
+    // @Override('updateOneBase')
+    // updateSwatch(
+    //     @ParsedRequest() req: CrudRequest,
+    //     @ParsedBody() dto: Swatch,
+    // ) {
+    //     return this.base.updateOneBase(req, dto);
+    // }
 
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @ApiBearerAuth()

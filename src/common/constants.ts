@@ -32,6 +32,22 @@ export enum ProductStatus {
     OutOfStock = 'OutOfStock',
 }
 
+export enum OrderStatus {
+    Requested = 'Requested',
+    Ordered = 'Ordered',
+    PendingDelivery  = 'Pending Delivery',
+    Received = 'Received',
+    Canceled = 'Canceled',
+}
+
+export enum InvoiceStatus {
+    Draft = 'Draft',
+    Open = 'Open',
+    Paid = 'Paid',
+    Uncollectible = 'Uncollectible',
+    Void = 'Void',
+}
+
 export enum Discount {
     SALE10 = 10,
     SALE15 = 15,
@@ -52,19 +68,19 @@ export enum PrimaryTopSize {
 }
 
 export enum PrimaryBottomSize {
-    S28 = 28,
-    S29 = 29,
-    S30 = 30,
-    S31 = 31,
-    S32 = 32,
-    S33 = 33,
+    S28 = '28',
+    S29 = '29',
+    S30 = '30',
+    S31 = '31',
+    S32 = '32',
+    S33 = '33',
 }
 
 export enum SecondarySize {
-    L28 = 28,
-    L29 = 29,
-    L30 = 30,
-    L31 = 31,
-    L32 = 32,
-    L33 = 33,
+    L28 = '28',
+    L29 = '29',
+    L30 = '30',
+    L31 = '31',
+    L32 = '32',
+    L33 = '33',
 }

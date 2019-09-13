@@ -16,7 +16,10 @@ import { CategoryModule } from './category/category.module';
 import { AddressModule } from './address/address.module';
 import { ProductModule } from './product/product.module';
 import { SwatchModule } from './swatch/swatch.module';
-import { DetailModule } from './detail/detail.module';
+import { ProductDetailModule } from './product_detail/productDetail.module';
+import { StockModule } from './stock/stock.module';
+import { OrderModule } from './order/order.module';
+import { OrderDetailModule } from './order_detail/orderDetail.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -53,7 +56,8 @@ async function bootstrap() {
     .build();
 
   const authDocument = SwaggerModule.createDocument(app, options, {
-    include: [AuthModule, UserModule, ProfileModule, CategoryModule, ProductModule, AddressModule, SwatchModule, DetailModule],
+    include: [AuthModule, UserModule, ProfileModule, CategoryModule, ProductModule, AddressModule,
+       SwatchModule, ProductDetailModule, StockModule, OrderModule, OrderDetailModule],
   });
   SwaggerModule.setup('api', app, authDocument);
 

@@ -21,11 +21,12 @@ import { PermissionsGuard } from '../guard/permissions.guard';
         },
     },
     routes: {
-        exclude: ['deleteOneBase'],
+        exclude: ['deleteOneBase', 'updateOneBase'],
     },
 })
 @ApiUseTags('addresses')
 @Controller('addresses')
+@ApiBearerAuth()
 export class AddressController implements CrudController<Address> {
     constructor(public service: AddressService) { }
 
@@ -35,7 +36,6 @@ export class AddressController implements CrudController<Address> {
 
     @Roles(UserRole.Moderator)
     @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
-    @ApiBearerAuth()
     @Override('getManyBase')
     getAddresses(
         @ParsedRequest() req: CrudRequest,
@@ -44,7 +44,6 @@ export class AddressController implements CrudController<Address> {
     }
 
     @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
-    @ApiBearerAuth()
     @Override('createManyBase')
     createAddresses(
         @ParsedRequest() req: CrudRequest,
@@ -54,7 +53,6 @@ export class AddressController implements CrudController<Address> {
     }
 
     @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @ApiBearerAuth()
     @Roles(UserRole.User, UserRole.Moderator)
     @Override()
     createOne(
@@ -66,7 +64,6 @@ export class AddressController implements CrudController<Address> {
 
     @Roles(UserRole.User, UserRole.Moderator)
     @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
-    @ApiBearerAuth()
     @Override('getOneBase')
     getAddress(
         @ParsedRequest() req: CrudRequest,
@@ -74,20 +71,18 @@ export class AddressController implements CrudController<Address> {
         return this.base.getOneBase(req);
     }
 
-    @Roles(UserRole.User, UserRole.Moderator)
-    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
-    @ApiBearerAuth()
-    @Override('updateOneBase')
-    updateAddress(
-        @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: Address,
-    ) {
-        return this.base.updateOneBase(req, dto);
-    }
+    // @Roles(UserRole.User, UserRole.Moderator)
+    // @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    // @Override('updateOneBase')
+    // updateAddress(
+    //     @ParsedRequest() req: CrudRequest,
+    //     @ParsedBody() dto: Address,
+    // ) {
+    //     return this.base.updateOneBase(req, dto);
+    // }
 
     @Roles(UserRole.User, UserRole.Moderator)
     @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
-    @ApiBearerAuth()
     @Override('replaceOneBase')
     replaceAddress(
         @ParsedRequest() req: CrudRequest,

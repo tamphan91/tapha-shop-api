@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Post, UseInterceptors, Param, UploadedFile } from '@nestjs/common';
+import { Controller, UseGuards, Post, UseInterceptors, Param, UploadedFile, NotFoundException } from '@nestjs/common';
 import { ApiUseTags, ApiBearerAuth, ApiOperation, ApiImplicitFile, ApiImplicitParam } from '@nestjs/swagger';
 import { CrudController, Crud, ParsedRequest, ParsedBody, CrudRequest, Override, CreateManyDto } from '@nestjsx/crud';
 import { Category } from './category.entity';
@@ -30,7 +30,7 @@ import { getFileNameFromPath, cloudinaryV2, deleteFile } from '../common/helper'
         },
     },
     routes: {
-        exclude: ['deleteOneBase'],
+        exclude: ['deleteOneBase', 'updateOneBase'],
     },
 })
 @ApiUseTags('categories')
@@ -60,6 +60,10 @@ export class CategoryController implements CrudController<Category> {
     @ApiImplicitParam({ name: 'id', required: true, description: 'Id of Category' })
     async uploadPhoto(@Param('id') categoryId, @UploadedFile() file) {
         const category = await this.service.findOne(categoryId);
+        if (!category) {
+            deleteFile(file.path);
+            throw new NotFoundException('Category with id ' + categoryId);
+        }
         if (category.image) {
             cloudinaryV2.uploader.destroy(getFileNameFromPath(category.image));
         }
@@ -90,15 +94,15 @@ export class CategoryController implements CrudController<Category> {
         return this.base.createOneBase(req, dto);
     }
 
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @ApiBearerAuth()
-    @Override('updateOneBase')
-    updateCategory(
-        @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: Category,
-    ) {
-        return this.base.updateOneBase(req, dto);
-    }
+    // @UseGuards(AuthGuard('jwt'), RolesGuard)
+    // @ApiBearerAuth()
+    // @Override('updateOneBase')
+    // updateCategory(
+    //     @ParsedRequest() req: CrudRequest,
+    //     @ParsedBody() dto: Category,
+    // ) {
+    //     return this.base.updateOneBase(req, dto);
+    // }
 
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @ApiBearerAuth()

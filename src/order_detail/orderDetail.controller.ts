@@ -1,8 +1,8 @@
-import { Controller, UseGuards, Get, UseInterceptors, Post, Param } from '@nestjs/common';
-import { ApiUseTags, ApiBearerAuth, ApiImplicitParam } from '@nestjs/swagger';
-import { CrudController, Crud, ParsedRequest, ParsedBody, CrudRequest, Override, CreateManyDto, CrudRequestInterceptor } from '@nestjsx/crud';
-import { Product } from './product.entity';
-import { ProductService } from './product.service';
+import { Controller, UseGuards } from '@nestjs/common';
+import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
+import { CrudController, Crud, ParsedRequest, ParsedBody, CrudRequest, Override, CreateManyDto } from '@nestjsx/crud';
+import { OrderDetail } from './orderDetail.entity';
+import { OrderDetailService } from './orderDetail.service';
 import { UserRole } from '../common/constants';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../guard/roles.guard';
@@ -10,14 +10,14 @@ import { Roles } from '../decorator/custom.decorator';
 
 @Crud({
     model: {
-        type: Product,
+        type: OrderDetail,
     },
     query: {
         join: {
-            category: {
+            stock: {
                 eager: false,
             },
-            details: {
+            purchase: {
                 eager: false,
             },
         },
@@ -26,52 +26,49 @@ import { Roles } from '../decorator/custom.decorator';
         exclude: ['deleteOneBase', 'updateOneBase'],
     },
 })
-@ApiUseTags('products')
-@Controller('products')
+@ApiUseTags('order-details')
+@Controller('order-details')
 @Roles(UserRole.Admin, UserRole.Moderator)
-export class ProductController implements CrudController<Product> {
-    constructor(public service: ProductService) { }
+@ApiBearerAuth()
+export class OrderDetailController implements CrudController<OrderDetail> {
+    constructor(public service: OrderDetailService) { }
 
-    get base(): CrudController<Product> {
+    get base(): CrudController<OrderDetail> {
         return this;
     }
 
     @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @ApiBearerAuth()
     @Override('createManyBase')
-    createProducts(
+    createCategories(
         @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: CreateManyDto<Product>,
+        @ParsedBody() dto: CreateManyDto<OrderDetail>,
     ) {
         return this.base.createManyBase(req, dto);
     }
 
     @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @ApiBearerAuth()
     @Override()
     createOne(
         @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: Product,
+        @ParsedBody() dto: OrderDetail,
     ) {
         return this.base.createOneBase(req, dto);
     }
 
     // @UseGuards(AuthGuard('jwt'), RolesGuard)
-    // @ApiBearerAuth()
     // @Override('updateOneBase')
-    // updateProduct(
+    // updatePurchase(
     //     @ParsedRequest() req: CrudRequest,
-    //     @ParsedBody() dto: Product,
+    //     @ParsedBody() dto: OrderDetail,
     // ) {
     //     return this.base.updateOneBase(req, dto);
     // }
 
     @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @ApiBearerAuth()
     @Override('replaceOneBase')
-    replaceProduct(
+    replacePurchase(
         @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: Product,
+        @ParsedBody() dto: OrderDetail,
     ) {
         return this.base.updateOneBase(req, dto);
     }

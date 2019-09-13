@@ -23,7 +23,7 @@ import { PermissionsGuard } from '../guard/permissions.guard';
         },
     },
     routes: {
-        exclude: ['deleteOneBase'],
+        exclude: ['deleteOneBase', 'updateOneBase'],
     },
 })
 @ApiUseTags('users')
@@ -66,16 +66,16 @@ export class UserController implements CrudController<User> {
         return this.base.getOneBase(req);
     }
 
-    @Roles(UserRole.User, UserRole.Moderator)
-    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
-    @ApiBearerAuth()
-    @Override('updateOneBase')
-    updateUser(
-        @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: UpdateUserDTO,
-    ) {
-        return this.base.updateOneBase(req, Object.assign(new User(), dto));
-    }
+    // @Roles(UserRole.User, UserRole.Moderator)
+    // @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    // @ApiBearerAuth()
+    // @Override('updateOneBase')
+    // updateUser(
+    //     @ParsedRequest() req: CrudRequest,
+    //     @ParsedBody() dto: UpdateUserDTO,
+    // ) {
+    //     return this.base.updateOneBase(req, Object.assign(new User(), dto));
+    // }
 
     @Roles(UserRole.User, UserRole.Moderator)
     @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)

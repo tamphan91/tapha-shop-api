@@ -1,8 +1,9 @@
 import { Base } from '../common/base.entity';
-import { Entity, Column, JoinColumn, OneToOne } from 'typeorm';
+import { Entity, Column, JoinColumn, OneToOne, OneToMany } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsNumber } from 'class-validator';
 import { Profile } from '../profile/profile.entity';
+import { Order } from '../order/order.entity';
 
 @Entity()
 export class Address extends Base {
@@ -23,4 +24,7 @@ export class Address extends Base {
     @OneToOne(type => Profile)
     @JoinColumn()
     profile: Profile;
+
+    @OneToMany(type => Order, order => order.address, {nullable: true})
+    orders: Order[];
 }

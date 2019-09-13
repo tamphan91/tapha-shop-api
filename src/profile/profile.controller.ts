@@ -1,7 +1,9 @@
-import { Controller, UseGuards, UseInterceptors, ClassSerializerInterceptor, Post, UploadedFile, Param, Body, Inject } from '@nestjs/common';
-import { ApiUseTags, ApiBearerAuth, ApiImplicitFile, ApiImplicitParam, ApiImplicitBody, ApiOperation } from '@nestjs/swagger';
+// tslint:disable-next-line:max-line-length
+import { Controller, UseGuards, UseInterceptors, ClassSerializerInterceptor, Post, UploadedFile, Param, Body, Inject, Get, Req, NotFoundException } from '@nestjs/common';
+// tslint:disable-next-line:max-line-length
+import { ApiUseTags, ApiBearerAuth, ApiImplicitFile, ApiImplicitParam, ApiImplicitBody, ApiOperation, ApiResponse, ApiImplicitQuery, ApiConsumes } from '@nestjs/swagger';
 import { ProfileService } from './profile.service';
-import { Crud, CrudController, Override, ParsedRequest, CrudRequest, ParsedBody, CreateManyDto } from '@nestjsx/crud';
+import { Crud, CrudController, Override, ParsedRequest, CrudRequest, ParsedBody, CreateManyDto, CrudRequestInterceptor } from '@nestjsx/crud';
 import { Profile } from './profile.entity';
 import { RolesGuard } from '../guard/roles.guard';
 import { Roles } from '../decorator/custom.decorator';
@@ -30,7 +32,7 @@ import { cloudinaryV2, getFileNameFromPath, deleteFile } from '../common/helper'
         },
     },
     routes: {
-        exclude: ['deleteOneBase'],
+        exclude: ['deleteOneBase', 'updateOneBase'],
     },
 })
 @ApiUseTags('profiles')
@@ -44,6 +46,45 @@ export class ProfileController implements CrudController<Profile> {
     get base(): CrudController<Profile> {
         return this;
     }
+
+    // @UseInterceptors(CrudRequestInterceptor)
+    // @Get('/:id/user')
+    // // @ApiResponse({status: 0})
+    // // @ApiImplicitParam({name: 'id'})
+    // async getDetails(@ParsedRequest() req: CrudRequest, @Param('id') id: number) {
+    //     // some awesome feature handling
+    //     const result = await this.service.findOne(id, { relations: ['user'] });
+    //     return result;
+    // }
+
+    // // @UseInterceptors(CrudRequestInterceptor)
+    // @Get('/:id/user/:id2')
+    // // @ApiImplicitParam({name: 'id'})
+    // async getDetail(@ParsedRequest() req: CrudRequest, @Param('id') id: number, @Param('id2') id2: number) {
+    //     // some awesome feature handling
+    //     return 'id2: ' + id2;
+    // }
+
+    // FORM DATA
+    // @Post(':id/updateRoles2')
+    // @ApiOperation({ description: 'Update user role by profileId', title: 'Update user role (Admin only)' })
+    // // @UseGuards(AuthGuard('jwt'), RolesGuard)
+    // // @ApiBearerAuth()
+    // @ApiImplicitParam({ name: 'id', required: true, description: 'Id of profile' })
+    // // @ApiImplicitBody({type: UpdateRoleDTO, name: 'roles'})
+    // @ApiConsumes('multipart/form-data')
+    // @UseInterceptors(FileInterceptor('file')) // this line helps to get formdata
+    // async updateRole2(
+    //     // @Body('roles') roles: UserRole[],
+    //     @Body() body: UpdateRoleDTO,
+    //     @Param('id') profileId,
+    //     @ParsedRequest() req,
+    // ) {
+    //     // tslint:disable-next-line:no-console
+    //     console.log('req: ', body.roles);
+    //     // await this.service.updateRoles(roles, profileId);
+    //     return 'Updated Roles successfully';
+    // }
 
     @Post(':id/updateRoles')
     @ApiOperation({ description: 'Update user role by profileId', title: 'Update user role (Admin only)' })
@@ -77,6 +118,10 @@ export class ProfileController implements CrudController<Profile> {
     @ApiImplicitParam({ name: 'id', required: true, description: 'Id of profile' })
     async uploadPhoto(@Param('id') profileId, @UploadedFile() file) {
         const profile = await this.service.findOne(profileId);
+        if (!profile) {
+            deleteFile(file.path);
+            throw new NotFoundException('Category with id ' + profileId);
+        }
         if (profile.photo) {
             cloudinaryV2.uploader.destroy(getFileNameFromPath(profile.photo));
         }
@@ -127,17 +172,17 @@ export class ProfileController implements CrudController<Profile> {
         return this.base.createOneBase(req, dto);
     }
 
-    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
-    @ApiBearerAuth()
-    @Override('updateOneBase')
-    @Roles(UserRole.User, UserRole.Moderator)
-    updateProfile(
-        @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: UpdateProfileDTO,
-    ) {
-        delete dto.roles;
-        return this.base.updateOneBase(req, Object.assign(new Profile(), dto));
-    }
+    // @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    // @ApiBearerAuth()
+    // @Override('updateOneBase')
+    // @Roles(UserRole.User, UserRole.Moderator)
+    // updateProfile(
+    //     @ParsedRequest() req: CrudRequest,
+    //     @ParsedBody() dto: UpdateProfileDTO,
+    // ) {
+    //     delete dto.roles;
+    //     return this.base.updateOneBase(req, Object.assign(new Profile(), dto));
+    // }
 
     @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
     @ApiBearerAuth()

@@ -1,5 +1,5 @@
 import { Base } from '../common/base.entity';
-import { Column, OneToOne, Entity } from 'typeorm';
+import { Column, OneToOne, Entity, OneToMany } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsString, IsArray, IsDefined, IsOptional } from 'class-validator';
 import { MyMaxDate } from '../validator/MyMaxDate.validator';
@@ -7,6 +7,7 @@ import { User } from '../user/user.entity';
 import { UserRole, Gender } from '../common/constants';
 import { Expose } from 'class-transformer';
 import { Address } from '../address/address.entity';
+import { Order } from '../order/order.entity';
 
 @Entity()
 export class Profile extends Base {
@@ -43,7 +44,7 @@ export class Profile extends Base {
         enum: [Gender.Famale, Gender.Male, Gender.Other],
     })
     @IsString()
-    @ApiModelProperty({ enum: [Gender.Famale, Gender.Male, Gender.Other] })
+    @ApiModelProperty({example: Gender.Male, enum: [Gender.Famale, Gender.Male, Gender.Other] })
     gender: Gender;
 
     @Column('text', {nullable: true})
@@ -69,4 +70,7 @@ export class Profile extends Base {
 
     @OneToOne(type => Address, address => address.profile) // specify inverse side as a second parameter
     address: Address;
+
+    @OneToMany(type => Order, order => order.profile, {nullable: true})
+    orders: Order[];
 }

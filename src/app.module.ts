@@ -11,7 +11,10 @@ import { CategoryModule } from './category/category.module';
 import { AddressModule } from './address/address.module';
 import { ProductModule } from './product/product.module';
 import { SwatchModule } from './swatch/swatch.module';
-import { DetailModule } from './detail/detail.module';
+import { ProductDetailModule } from './product_detail/productDetail.module';
+import { StockModule } from './stock/stock.module';
+import { OrderModule } from './order/order.module';
+import { OrderDetailModule } from './order_detail/orderDetail.module';
 
 @Module({
   imports: [
@@ -27,7 +30,8 @@ import { DetailModule } from './detail/detail.module';
       logging: true,
       ssl: true,
     }),
-    AuthModule, UserModule, ProfileModule, CategoryModule, ProductModule, AddressModule, SwatchModule, DetailModule],
+    AuthModule, UserModule, ProfileModule, CategoryModule, ProductModule, AddressModule,
+     SwatchModule, ProductDetailModule, StockModule, OrderModule, OrderDetailModule],
   controllers: [AppController, ProfileController],
   providers: [AppService],
 })

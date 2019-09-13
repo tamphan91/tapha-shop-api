@@ -4,15 +4,15 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 import { Gender } from '../common/constants';
 import { Category } from '../category/category.entity';
-import { Detail } from '../detail/detail.entity';
+import { ProductDetail } from '../product_detail/productDetail.entity';
 
 @Entity()
 export class Product extends Base {
-    @ApiModelProperty({ example: 'Jean', description: 'Jean' })
+    @ApiModelProperty({ example: 'Hollister Epic Flex Super Skinny Jeans', description: 'Name of product' })
     @Column()
     name: string;
 
-    @ApiModelProperty({ example: 'Jean', description: 'Jean' })
+    @ApiModelProperty({ example: 44, description: 'Original price of product' })
     @Column()
     originalPrice: number;
 
@@ -28,11 +28,11 @@ export class Product extends Base {
     @JoinColumn()
     category: Category;
 
-    @ApiModelProperty({ example: 5, description: 'The categoryId of the Product' })
+    @ApiModelProperty({ example: 1, description: 'The categoryId of the Product' })// validate childrenCategory of this category is null - todo
     @IsNumber()
     categoryId: number;
 
-    @OneToMany(type => Detail, category => category.product)
+    @OneToMany(type => ProductDetail, detail => detail.product)
     @JoinColumn()
-    details: Detail[];
+    details: ProductDetail[];
 }
