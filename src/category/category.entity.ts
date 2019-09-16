@@ -34,6 +34,7 @@ export class Category extends Base {
     parentCategoryId: number;
 
     @ManyToOne(type => Category, category => category.childCategories, {nullable: true})
+    @JoinColumn()
     parentCategory: Category;
 
     @OneToMany(type => Category, category => category.parentCategory, {nullable: true})

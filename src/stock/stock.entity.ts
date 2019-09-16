@@ -1,5 +1,5 @@
 import { Base } from '../common/base.entity';
-import { Entity, Column, Index, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, Column, Index, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { PrimaryTopSize, PrimaryBottomSize, SecondarySize, Gender } from '../common/constants';
 import { ProductDetail } from '../product_detail/productDetail.entity';
@@ -41,6 +41,7 @@ export class Stock extends Base {
 
     // @ManyToOne(type => ProductDetail, productDetail => productDetail.stocks, {nullable: true})
     @ManyToOne(type => ProductDetail, productDetail => productDetail.stocks)
+    @JoinColumn()
     productDetail: ProductDetail;
 
     @OneToMany(type => OrderDetail, orderDetail => orderDetail.order, {nullable: true})

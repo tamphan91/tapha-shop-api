@@ -2,7 +2,7 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { IsEmail, IsString, IsOptional, IsDefined, IsNumber } from 'class-validator';
 import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
 import { Base } from '../common/base.entity';
-import { IsUserEmailAlreadyExist } from '../validator/IsAlreadyExist.validator';
+import { IsUserEmailAlreadyExist } from '../validator/IsUserEmailAlreadyExist.validator';
 import { Profile } from '../profile/profile.entity';
 import { CrudValidationGroups } from '@nestjsx/crud';
 const { CREATE, UPDATE } = CrudValidationGroups;

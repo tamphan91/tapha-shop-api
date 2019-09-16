@@ -10,7 +10,6 @@ import { Roles } from '../decorator/custom.decorator';
 import { PermissionsGuard } from '../guard/permissions.guard';
 import { getRepository } from 'typeorm';
 import { Stock } from '../stock/stock.entity';
-import { async } from 'rxjs/internal/scheduler/async';
 
 @Crud({
     model: {
@@ -43,13 +42,13 @@ export class OrderDetailController implements CrudController<OrderDetail> {
     }
 
     // @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Override('createManyBase')
-    createOrderDetails(
-        @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: CreateManyDto<OrderDetail>,
-    ) {
-        return this.base.createManyBase(req, dto);
-    }
+    // @Override('createManyBase')
+    // createOrderDetails(
+    //     @ParsedRequest() req: CrudRequest,
+    //     @ParsedBody() dto: CreateManyDto<OrderDetail>,
+    // ) {
+    //     return this.base.createManyBase(req, dto);
+    // }
 
     // @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(UserRole.User)
@@ -60,6 +59,7 @@ export class OrderDetailController implements CrudController<OrderDetail> {
     ) {
         const stock = await getRepository(Stock).findOne({id: dto.stockId}, {relations: ['productDetail', 'productDetail.product']});
         dto.amount = stock.productDetail.product.originalPrice;
+        dto.currency = stock.productDetail.product.currency;
         dto.discount = stock.productDetail.discountPercent;
         return this.base.createOneBase(req, dto);
     }
@@ -74,15 +74,25 @@ export class OrderDetailController implements CrudController<OrderDetail> {
     // }
 
     // @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles(UserRole.User)
-    @Override('replaceOneBase')
-    async replaceOrderDetail(
+    // // @Roles(UserRole.User)
+    // @Override('replaceOneBase')
+    // async replaceOrderDetail(
+    //     @ParsedRequest() req: CrudRequest,
+    //     @ParsedBody() dto: OrderDetail,
+    // ) {
+    //     // const stock = await getRepository(Stock).findOne({id: dto.stockId}, {relations: ['productDetail', 'productDetail.product']});
+    //     // dto.amount = stock.productDetail.product.originalPrice;
+    //     // dto.currency = stock.productDetail.product.currency;
+    //     // dto.discount = stock.productDetail.discountPercent;
+    //     return this.base.updateOneBase(req, dto);
+    // }
+
+    @Override()
+    async deleteOne(
         @ParsedRequest() req: CrudRequest,
-        @ParsedBody() dto: OrderDetail,
     ) {
-        const stock = await getRepository(Stock).findOne({id: dto.stockId}, {relations: ['productDetail', 'productDetail.product']});
-        dto.amount = stock.productDetail.product.originalPrice;
-        dto.discount = stock.productDetail.discountPercent;
-        return this.base.updateOneBase(req, dto);
+        const orderDetail = new OrderDetail();
+        orderDetail.state = 0;
+        return this.base.updateOneBase(req, orderDetail);
     }
 }

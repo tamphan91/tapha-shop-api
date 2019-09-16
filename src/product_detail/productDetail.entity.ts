@@ -1,5 +1,5 @@
 import { Base } from '../common/base.entity';
-import { Entity, Column, ManyToOne, OneToMany} from 'typeorm';
+import { Entity, Column, ManyToOne, OneToMany, JoinColumn} from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { ProductStatus, Discount } from '../common/constants';
 import { IsOptional, IsNumber } from 'class-validator';
@@ -52,7 +52,12 @@ export class ProductDetail extends Base {
     @ApiModelProperty({ example: 1, description: 'ProductId of product'})
     productId: number;
 
+    @Column()
+    @ApiModelProperty({ example: 1, description: 'SwatchId of swatch'})
+    swatchId: number;
+
     @ManyToOne(type => Product, product => product.details)
+    @JoinColumn()
     product: Product;
 
     @OneToMany(type => Stock, stock => stock.productDetail, {nullable: true})
@@ -61,6 +66,7 @@ export class ProductDetail extends Base {
     // @OneToMany(type => Order, order => order.productDetail, {nullable: true})
     // orders: Order[];
 
-    @ManyToOne(type => Swatch, swatch => swatch.productDetails, {nullable: true})
+    @ManyToOne(type => Swatch, swatch => swatch.productDetails)
+    @JoinColumn()
     swatch: Swatch;
 }

@@ -1,5 +1,5 @@
 import { Base } from '../common/base.entity';
-import { Entity, Column, ManyToOne } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { Stock } from '../stock/stock.entity';
 import { Order } from '../order/order.entity';
@@ -28,14 +28,15 @@ export class OrderDetail extends Base {
     @Column({nullable: true})
     discount: number;
 
-    // TODO get from product
     // @ApiModelProperty({ enum: Currency, description: 'currency of order', example: Currency.USD })
     @Column()
     currency: Currency;
 
     @ManyToOne(type => Stock, stock => stock.OrderDetails)
+    @JoinColumn()
     stock: Stock;
 
     @ManyToOne(type => Order, order => order.OrderDetails)
+    @JoinColumn()
     order: Order;
 }

@@ -1,5 +1,5 @@
 import { Base } from '../common/base.entity';
-import { Column, OneToOne, Entity, OneToMany } from 'typeorm';
+import { Column, OneToOne, Entity, OneToMany, JoinColumn } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsString, IsArray, IsDefined, IsOptional } from 'class-validator';
 import { MyMaxDate } from '../validator/MyMaxDate.validator';
@@ -68,8 +68,8 @@ export class Profile extends Base {
     @OneToOne(type => User, user => user.profile) // specify inverse side as a second parameter
     user: User;
 
-    @OneToOne(type => Address, address => address.profile) // specify inverse side as a second parameter
-    address: Address;
+    @OneToMany(type => Address, address => address.profile) // specify inverse side as a second parameter
+    addresses: Address[];
 
     @OneToMany(type => Order, order => order.profile, {nullable: true})
     orders: Order[];

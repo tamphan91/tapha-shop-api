@@ -1,5 +1,5 @@
 import { Base } from '../common/base.entity';
-import { Entity, Column, JoinColumn, OneToOne, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsNumber } from 'class-validator';
 import { Profile } from '../profile/profile.entity';
@@ -8,20 +8,31 @@ import { Order } from '../order/order.entity';
 @Entity()
 export class Address extends Base {
 
-    @ApiModelProperty({ example: 'address1', description: 'address1' })
+    @ApiModelProperty({ example: 'street', description: 'street' })
     @Column()
-    address1: string;
+    street: string;
 
-    @ApiModelProperty({ example: 'address2', description: 'address2' })
+    @ApiModelProperty({ example: 'street2', description: 'street2' })
     @Column()
-    address2: string;
+    street2: string;
+
+    @ApiModelProperty({ example: 'city', description: 'city' })
+    @Column()
+    city: string;
+
+    @ApiModelProperty({ example: 'zipcode', description: 'zipcode' })
+    @Column()
+    zipcode: string;
+
+    @ApiModelProperty({ example: 'state', description: 'state' })
+    @Column()
+    addressState: string;
 
     @ApiModelProperty({ example: 5, description: 'The profileId of the User' })
-    @Column({ unique: true })
     @IsNumber()
     profileId: number;
 
-    @OneToOne(type => Profile)
+    @ManyToOne(type => Profile, profile => profile.addresses)
     @JoinColumn()
     profile: Profile;
 

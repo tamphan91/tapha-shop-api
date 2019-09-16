@@ -1,4 +1,4 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller, UseGuards, BadRequestException } from '@nestjs/common';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { CrudController, Crud, ParsedRequest, ParsedBody, CrudRequest, Override, CreateManyDto } from '@nestjsx/crud';
 import { Order } from './order.entity';
@@ -8,6 +8,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../guard/roles.guard';
 import { Roles } from '../decorator/custom.decorator';
 import { PermissionsGuard } from '../guard/permissions.guard';
+import {getRepository} from 'typeorm';
+import { Profile } from '../profile/profile.entity';
 
 @Crud({
     model: {
@@ -54,13 +56,17 @@ export class OrderController implements CrudController<Order> {
         return this.base.createManyBase(req, dto);
     }
 
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    // @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(UserRole.User, UserRole.Moderator)
     @Override()
-    createOne(
+    async createOne(
         @ParsedRequest() req: CrudRequest,
         @ParsedBody() dto: Order,
     ) {
+        const profile = await getRepository(Profile).findOne(dto.profileId, {relations: ['addresses']});
+        if (!profile.addresses.some(p => p.id === dto.addressId)) {
+            throw new BadRequestException(`AddressId with value ${dto.addressId} is invalid`);
+        }
         return this.base.createOneBase(req, dto);
     }
 
@@ -84,12 +90,16 @@ export class OrderController implements CrudController<Order> {
     // }
 
     // @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
-    @Roles(UserRole.User, UserRole.Moderator)
+    @Roles(UserRole.Moderator)
     @Override('replaceOneBase')
-    replaceOrder(
+    async replaceOrder(
         @ParsedRequest() req: CrudRequest,
         @ParsedBody() dto: Order,
     ) {
+        const profile = await getRepository(Profile).findOne(dto.profileId, {relations: ['addresses']});
+        if (!profile.addresses.some(p => p.id === dto.addressId)) {
+            throw new BadRequestException(`AddressId with value ${dto.addressId} is invalid`);
+        }
         return this.base.updateOneBase(req, dto);
     }
 }

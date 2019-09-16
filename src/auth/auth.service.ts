@@ -1,8 +1,7 @@
 import { Injectable, Logger, InternalServerErrorException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { sign } from 'jsonwebtoken';
-import { jwtConstants, Gender, Provider } from '../common/constants';
+import {  Gender, Provider } from '../common/constants';
 import { GoogleService } from '../google/google.service';
 import { ProfileService } from '../profile/profile.service';
 import { Profile } from '../profile/profile.entity';
@@ -32,6 +31,7 @@ export class AuthService {
     // const user = await this.userService.findOne({ email: username });
     if (user[0] && user[0].password === pass) {
       const { password, ...result } = user[0];
+      // const { Other, ...result1 } = Gender;
       return result;
     }
     return null;

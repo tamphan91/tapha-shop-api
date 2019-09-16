@@ -21,7 +21,6 @@ import { StockModule } from './stock/stock.module';
 import { OrderModule } from './order/order.module';
 import { OrderDetailModule } from './order_detail/orderDetail.module';
 import { InvoiceModule } from './invoice/invoice.module';
-import { Stock } from './stock/stock.entity';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -37,7 +36,6 @@ async function bootstrap() {
     await userRepository.save(adminUserToSave);
     Logger.log('Inited admin user successfull!');
   }
-
   // const stock = await getRepository(Stock).findOne({id: 1}, {relations: ['productDetail', 'productDetail.product']});
   // // tslint:disable-next-line:no-console
   // console.log('originalPrice: ', stock.productDetail.product.originalPrice);

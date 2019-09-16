@@ -1,8 +1,7 @@
 import { Base } from '../common/base.entity';
-import { Entity, Column, Index, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import { Entity, Column, ManyToOne, OneToMany, OneToOne, JoinColumn } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { OrderStatus } from '../common/constants';
-import { ProductDetail } from '../product_detail/productDetail.entity';
 import { Address } from '../address/address.entity';
 import { Profile } from '../profile/profile.entity';
 import { OrderDetail } from '../order_detail/orderDetail.entity';
@@ -37,9 +36,11 @@ export class Order extends Base {
     // productDetail: ProductDetail;
 
     @ManyToOne(type => Address, address => address.orders)// TODO validate address for profile
+    @JoinColumn()
     address: Address;
 
     @ManyToOne(type => Profile, profile => profile.orders)
+    @JoinColumn()
     profile: Profile;
 
     @OneToMany(type => OrderDetail, orderDetail => orderDetail.order, {nullable: true})
