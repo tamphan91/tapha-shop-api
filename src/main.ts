@@ -46,7 +46,7 @@ async function bootstrap() {
     // console.log('discountPercent: ', stock.productDetail.discountPercent);
 
     let times = 1;
-    scheduleJob('* * * * *', () => {
+    scheduleJob('*/5 * * * *', () => {
         const atTimes = times++;
         Logger.log('Start crawl Nike Sale Job at ' + new Date() + ` - ${atTimes}`);
         // tslint:disable-next-line:max-line-length
@@ -83,22 +83,22 @@ async function bootstrap() {
                 let productCards;
                 // do {
                 Logger.log('start', total);
-                // await page.evaluate(async () => {
-                //     await new Promise((resolve, reject) => {
-                //         let totalHeight = (document.body.scrollHeight > 10000) ? (document.body.scrollHeight - 6000) : 0;
-                //         const distance = 100;
-                //         const timer = setInterval(() => {
-                //             const scrollHeight = document.body.scrollHeight;
-                //             window.scrollBy(0, distance);
-                //             totalHeight += distance;
+                await page.evaluate(async () => {
+                    await new Promise((resolve, reject) => {
+                        let totalHeight = (document.body.scrollHeight > 10000) ? (document.body.scrollHeight - 6000) : 0;
+                        const distance = 100;
+                        const timer = setInterval(() => {
+                            const scrollHeight = document.body.scrollHeight;
+                            window.scrollBy(0, distance);
+                            totalHeight += distance;
 
-                //             if (totalHeight >= scrollHeight) {
-                //                 clearInterval(timer);
-                //                 resolve();
-                //             }
-                //         }, 150);
-                //     });
-                // });
+                            if (totalHeight >= scrollHeight) {
+                                clearInterval(timer);
+                                resolve();
+                            }
+                        }, 200);
+                    });
+                });
                 productCards = await page.$$('#Wall > div > div.results__body > div > main > section > div > div > .product-card__body');
                 Logger.log('end', productCards.length);
                 // } while (productCards.length < total);
