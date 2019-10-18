@@ -45,81 +45,81 @@ async function bootstrap() {
   // // tslint:disable-next-line:no-console
   // console.log('discountPercent: ', stock.productDetail.discountPercent);
 
-  let times = 1;
+  // let times = 1;
   // scheduleJob('* * * * *', () => {
-  const atTimes = times++;
-  Logger.log('Start crawl Nike Sale Job at ' + new Date() + ` - ${atTimes}`);
-  launch({ args: ['--no-sandbox'] }).then(async browser => {
-    const page = await browser.newPage();
-    await page.goto('https://nike.com/us');
+  //   const atTimes = times++;
+  //   Logger.log('Start crawl Nike Sale Job at ' + new Date() + ` - ${atTimes}`);
+  //   launch({ args: ['--no-sandbox'] }).then(async browser => {
+  //     const page = await browser.newPage();
+  //     await page.goto('https://nike.com/us');
 
-    // click to show menu bar
-    await page.waitFor('#MobileMenuToggle');
-    await page.click('#MobileMenuToggle');
+  //     // click to show menu bar
+  //     await page.waitFor('#MobileMenuToggle');
+  //     await page.click('#MobileMenuToggle');
 
-    // click Men button
-    // tslint:disable-next-line:max-line-length
-    await page.waitFor('#gen-nav-commerce-header > header > nav.ncss-container.bg-white > section.d-sm-b > div > div.l-mobile-nav.d-lg-h.pt2-sm.pb2-sm > nav > div > div.mobile.menu-panel > ul > li:nth-child(3)');
-    // tslint:disable-next-line:max-line-length
-    await page.click('#gen-nav-commerce-header > header > nav.ncss-container.bg-white > section.d-sm-b > div > div.l-mobile-nav.d-lg-h.pt2-sm.pb2-sm > nav > div > div.mobile.menu-panel > ul > li:nth-child(3)');
+  //     // click Men button
+      // tslint:disable-next-line:max-line-length
+  //     await page.waitFor('#gen-nav-commerce-header > header > nav.ncss-container.bg-white > section.d-sm-b > div > div.l-mobile-nav.d-lg-h.pt2-sm.pb2-sm > nav > div > div.mobile.menu-panel > ul > li:nth-child(3)');
+      // tslint:disable-next-line:max-line-length
+  //     await page.click('#gen-nav-commerce-header > header > nav.ncss-container.bg-white > section.d-sm-b > div > div.l-mobile-nav.d-lg-h.pt2-sm.pb2-sm > nav > div > div.mobile.menu-panel > ul > li:nth-child(3)');
 
-    // get href from Sale button
-    // tslint:disable-next-line:max-line-length
-    const salePageHref = await page.$eval('#gen-nav-commerce-header > header > nav.ncss-container.bg-white > section.d-sm-b > div > div.l-mobile-nav.d-lg-h.pt2-sm.pb2-sm > nav > div > div.mobile-menu-panel.is-active > ul > li:nth-child(6) > a', el => el.getAttribute('href'));
-    await page.goto(salePageHref);
-    await page.waitFor('#Wall > div > div.header-position.css-iqr4dm');
+  //     // get href from Sale button
+      // tslint:disable-next-line:max-line-length
+  //     const salePageHref = await page.$eval('#gen-nav-commerce-header > header > nav.ncss-container.bg-white > section.d-sm-b > div > div.l-mobile-nav.d-lg-h.pt2-sm.pb2-sm > nav > div > div.mobile-menu-panel.is-active > ul > li:nth-child(6) > a', el => el.getAttribute('href'));
+  //     await page.goto(salePageHref);
+  //     await page.waitFor('#Wall > div > div.header-position.css-iqr4dm');
 
-    // tslint:disable-next-line:max-line-length
-    await page.waitFor('#Wall > div > div.categories.css-mzf2z2.is--mobile > div > div.simplebar-wrapper > div.simplebar-mask > div > div > a:nth-child(1) > div');
-    // tslint:disable-next-line:max-line-length
-    const countDiv = await page.$eval('#Wall > div > div.categories.css-mzf2z2.is--mobile > div > div.simplebar-wrapper > div.simplebar-mask > div > div > a:nth-child(1) > div', el => el.innerHTML);
-    const total = countDiv.replace(/\(|\)/gi, '');
-    // tslint:disable-next-line:max-line-length
-    await page.click('#Wall > div > div.categories.css-mzf2z2.is--mobile > div > div.simplebar-wrapper > div.simplebar-mask > div > div > a:nth-child(1)');
+      // tslint:disable-next-line:max-line-length
+  //     await page.waitFor('#Wall > div > div.categories.css-mzf2z2.is--mobile > div > div.simplebar-wrapper > div.simplebar-mask > div > div > a:nth-child(1) > div');
+      // tslint:disable-next-line:max-line-length
+  //     const countDiv = await page.$eval('#Wall > div > div.categories.css-mzf2z2.is--mobile > div > div.simplebar-wrapper > div.simplebar-mask > div > div > a:nth-child(1) > div', el => el.innerHTML);
+  //     const total = countDiv.replace(/\(|\)/gi, '');
+      // tslint:disable-next-line:max-line-length
+  //     await page.click('#Wall > div > div.categories.css-mzf2z2.is--mobile > div > div.simplebar-wrapper > div.simplebar-mask > div > div > a:nth-child(1)');
 
-    let productCards;
-    do {
-      Logger.log('start', total);
-      await page.evaluate(async () => {
-        await new Promise((resolve, reject) => {
-          let totalHeight = document.body.scrollHeight - 6000;
-          const distance = 100;
-          const timer = setInterval(() => {
-            const scrollHeight = document.body.scrollHeight;
-            window.scrollBy(0, distance);
-            totalHeight += distance;
+  //     let productCards;
+  //     do {
+  //       Logger.log('start', total);
+  //       await page.evaluate(async () => {
+  //         await new Promise((resolve, reject) => {
+  //           let totalHeight = document.body.scrollHeight - 6000;
+  //           const distance = 100;
+  //           const timer = setInterval(() => {
+  //             const scrollHeight = document.body.scrollHeight;
+  //             window.scrollBy(0, distance);
+  //             totalHeight += distance;
 
-            if (totalHeight >= scrollHeight) {
-              clearInterval(timer);
-              resolve();
-            }
-          }, 100);
-        });
-      });
-      productCards = await page.$$('#Wall > div > div.results__body > div > main > section > div > div > .product-card__body');
-      Logger.log('end', productCards.length);
-    } while (productCards.length < total);
-    const products = [];
-    for (const productCard of productCards) {
-      const name = await productCard.$eval('.product-card__link-overlay', el => el.innerHTML);
-      const priceReduced = await productCard.$eval('.css-i260wg', el => el.innerHTML);
-      const priceOriginal = await productCard.$eval('.css-31z3ik.css-ndethb', el => el.innerHTML);
-      const picture = await productCard.$eval('picture > img', el => el.getAttribute('src'));
-      const href = await productCard.$eval('.product-card__link-overlay', el => el.getAttribute('href'));
-      products.push({ name, priceReduced, priceOriginal, picture, href });
-    }
-    const path = process.env.NIKE_SALE_PATH;
-    ensureDirSync(path);
-    const directories = readdirSync(path);
-    const exceptTop5Files = directories.slice(0, directories.length - 5);
-    exceptTop5Files.forEach(element => {
-      remove(path + '/' + element);
-    });
-    writeJSON(path + '/' + new Date().getTime() + '.json', products);
+  //             if (totalHeight >= scrollHeight) {
+  //               clearInterval(timer);
+  //               resolve();
+  //             }
+  //           }, 100);
+  //         });
+  //       });
+  //       productCards = await page.$$('#Wall > div > div.results__body > div > main > section > div > div > .product-card__body');
+  //       Logger.log('end', productCards.length);
+  //     } while (productCards.length < total);
+  //     const products = [];
+  //     for (const productCard of productCards) {
+  //       const name = await productCard.$eval('.product-card__link-overlay', el => el.innerHTML);
+  //       const priceReduced = await productCard.$eval('.css-i260wg', el => el.innerHTML);
+  //       const priceOriginal = await productCard.$eval('.css-31z3ik.css-ndethb', el => el.innerHTML);
+  //       const picture = await productCard.$eval('picture > img', el => el.getAttribute('src'));
+  //       const href = await productCard.$eval('.product-card__link-overlay', el => el.getAttribute('href'));
+  //       products.push({ name, priceReduced, priceOriginal, picture, href });
+  //     }
+  //     const path = process.env.NIKE_SALE_PATH;
+  //     ensureDirSync(path);
+  //     const directories = readdirSync(path);
+  //     const exceptTop5Files = directories.slice(0, directories.length - 5);
+  //     exceptTop5Files.forEach(element => {
+  //       remove(path + '/' + element);
+  //     });
+  //     writeJSON(path + '/' + new Date().getTime() + '.json', products);
 
-    Logger.log('Done crawl Nike Sale Job at ' + new Date() + ` - ${atTimes}`);
-    await browser.close();
-  });
+  //     Logger.log('Done crawl Nike Sale Job at ' + new Date() + ` - ${atTimes}`);
+  //     await browser.close();
+  //   });
   // });
 
   /**
