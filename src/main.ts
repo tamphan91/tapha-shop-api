@@ -49,7 +49,7 @@ async function bootstrap() {
   scheduleJob('* * * * *', () => {
     const atTimes = times++;
     Logger.log('Start crawl Nike Sale Job at ' + new Date() + ` - ${atTimes}`);
-    launch().then(async browser => {
+    launch({ args: ['--no-sandbox'] }).then(async browser => {
       const page = await browser.newPage();
       await page.goto('https://nike.com/us');
 
