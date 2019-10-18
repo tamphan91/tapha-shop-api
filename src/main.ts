@@ -80,27 +80,27 @@ async function bootstrap() {
             await page.click('#Wall > div > div.categories.css-mzf2z2.is--mobile > div > div.simplebar-wrapper > div.simplebar-mask > div > div > a:nth-child(1)');
 
             let productCards;
-            do {
-                Logger.log('start', total);
-                await page.evaluate(async () => {
-                    await new Promise((resolve, reject) => {
-                        let totalHeight = (document.body.scrollHeight > 10000) ? (document.body.scrollHeight - 6000) : 0;
-                        const distance = 100;
-                        const timer = setInterval(() => {
-                            const scrollHeight = document.body.scrollHeight;
-                            window.scrollBy(0, distance);
-                            totalHeight += distance;
+            // do {
+            Logger.log('start', total);
+                // await page.evaluate(async () => {
+                //     await new Promise((resolve, reject) => {
+                //         let totalHeight = (document.body.scrollHeight > 10000) ? (document.body.scrollHeight - 6000) : 0;
+                //         const distance = 100;
+                //         const timer = setInterval(() => {
+                //             const scrollHeight = document.body.scrollHeight;
+                //             window.scrollBy(0, distance);
+                //             totalHeight += distance;
 
-                            if (totalHeight >= scrollHeight) {
-                                clearInterval(timer);
-                                resolve();
-                            }
-                        }, 150);
-                    });
-                });
-                productCards = await page.$$('#Wall > div > div.results__body > div > main > section > div > div > .product-card__body');
-                Logger.log('end', productCards.length);
-            } while (productCards.length < total);
+                //             if (totalHeight >= scrollHeight) {
+                //                 clearInterval(timer);
+                //                 resolve();
+                //             }
+                //         }, 150);
+                //     });
+                // });
+            productCards = await page.$$('#Wall > div > div.results__body > div > main > section > div > div > .product-card__body');
+            Logger.log('end', productCards.length);
+            // } while (productCards.length < total);
             const products = [];
             for (const productCard of productCards) {
                 const name = await productCard.$eval('.product-card__link-overlay', el => el.innerHTML);
@@ -118,8 +118,8 @@ async function bootstrap() {
                 exceptTop5Files.forEach(element => {
                     remove(path + '/' + element);
                 });
-                writeJSON(path + '/' + new Date().getTime() + '.json', products);
             }
+            writeJSON(path + '/' + new Date().getTime() + '.json', products);
 
             Logger.log('Done crawl Nike Sale Job at ' + new Date() + ` - ${atTimes}`);
         } catch (error) {
