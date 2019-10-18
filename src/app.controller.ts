@@ -33,14 +33,19 @@ export class AppController {
       const filterBy = str => products.filter(
         item => new RegExp('^' + str.replace(/\*/g, '.*') + '$').test(item.name.toLowerCase()),
       );
+      products = withName ? filterBy(`*${withName.toLowerCase()}*`) : products;
       const paginate = (array, pageSize, pageNumber) => {
         --pageNumber; // because pages logically start with 1, but technically with 0
         return array.slice(pageNumber * pageSize, (pageNumber + 1) * pageSize);
       };
-      if (page) {
-        products = paginate(products, process.env.LIMIT_PAGE, page < 1 ? 1 : page);
-      }
-      res.send(withName ? filterBy(`*${withName.toLowerCase()}*`) : products);
+      const items = paginate(products, process.env.LIMIT_PAGE, page ? (page < 1 ? 1 : page) : 1);
+      const dataReturn = {
+        items,
+        itemCount: items.length,
+        total: products.length,
+        pageCount: Math.ceil(products.length / parseInt(process.env.LIMIT_PAGE, null)),
+      };
+      res.send(dataReturn);
     }
   }
 }
