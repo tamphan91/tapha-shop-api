@@ -17,7 +17,7 @@ export class AppController {
   }
 
   @Get('nike/sale')
-  async serveSaleNike(@Res() res, @Query('name') withName: string): Promise<any> {
+  async serveSaleNike(@Res() res, @Query('name') withName: string, @Query('page') page: number): Promise<any> {
     const path = process.env.NIKE_SALE_PATH;
     ensureDirSync(path);
     const directories = readdirSync(path);
@@ -29,10 +29,17 @@ export class AppController {
       // tslint:disable-next-line:no-console
       console.log('directories[directories.length - 1]', directories[directories.length - 1]);
       // res.sendFile(directories[directories.length - 1], { root: path });
-      const products = readJsonSync(path + '/' + directories[directories.length - 1]);
+      let products = readJsonSync(path + '/' + directories[directories.length - 1]);
       const filterBy = str => products.filter(
         item => new RegExp('^' + str.replace(/\*/g, '.*') + '$').test(item.name.toLowerCase()),
       );
+      const paginate = (array, pageSize, pageNumber) => {
+        --pageNumber; // because pages logically start with 1, but technically with 0
+        return array.slice(pageNumber * pageSize, (pageNumber + 1) * pageSize);
+      };
+      if (page) {
+        products = paginate(products, process.env.LIMIT_PAGE, page < 1 ? 1 : page);
+      }
       res.send(withName ? filterBy(`*${withName.toLowerCase()}*`) : products);
     }
   }

@@ -45,10 +45,8 @@ async function bootstrap() {
     // // tslint:disable-next-line:no-console
     // console.log('discountPercent: ', stock.productDetail.discountPercent);
 
-    let times = 1;
     scheduleJob('*/5 * * * *', () => {
-        const atTimes = times++;
-        Logger.log('Start crawl Nike Sale Job at ' + new Date() + ` - ${atTimes}`);
+        Logger.log('Start crawl Nike Sale Job at ' + new Date() );
         // tslint:disable-next-line:max-line-length
         launch({ args: ['--no-sandbox', '--unlimited-storage', '--full-memory-crash-report', '--force-gpu-mem-available-mb'] }).then(async browser => {
             const page = await browser.newPage();
@@ -122,7 +120,7 @@ async function bootstrap() {
                 }
                 writeJSON(path + '/' + new Date().getTime() + '.json', products);
 
-                Logger.log('Done crawl Nike Sale Job at ' + new Date() + ` - ${atTimes}`);
+                Logger.log('Done crawl Nike Sale Job at ' + new Date());
             } catch (error) {
                 Logger.log('error:', error);
             } finally {
