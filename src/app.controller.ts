@@ -1,10 +1,92 @@
-import { Controller, Get, Param, Res, Query } from '@nestjs/common';
+import { Controller, Get, Param, Res, Logger } from '@nestjs/common';
 import { AppService } from './app.service';
-import { readdirSync, ensureDirSync, readJsonSync } from 'fs-extra';
+import { scheduleJob } from 'node-schedule';
+import { launch } from 'puppeteer';
+import { NikesService } from './nike/nikes.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) { }
+  constructor(private readonly appService: AppService, private readonly nikeService: NikesService) {
+    scheduleJob('*/5 * * * *', () => {
+      Logger.log('Start crawl Nike Sale Job at ' + new Date());
+      // tslint:disable-next-line:max-line-length
+      launch({ args: ['--no-sandbox', '--unlimited-storage', '--full-memory-crash-report', '--force-gpu-mem-available-mb'] }).then(async browser => {
+        const page = await browser.newPage();
+        try {
+
+          await page.goto('https://nike.com/us');
+
+          // click to show menu bar
+          await page.waitFor('#MobileMenuToggle');
+          await page.click('#MobileMenuToggle');
+
+          // click Men button
+          // tslint:disable-next-line:max-line-length
+          await page.waitFor('#gen-nav-commerce-header > header > nav.ncss-container.bg-white > section.d-sm-b > div > div.l-mobile-nav.d-lg-h.pt2-sm.pb2-sm > nav > div > div.mobile.menu-panel > ul > li:nth-child(3)');
+          // tslint:disable-next-line:max-line-length
+          await page.click('#gen-nav-commerce-header > header > nav.ncss-container.bg-white > section.d-sm-b > div > div.l-mobile-nav.d-lg-h.pt2-sm.pb2-sm > nav > div > div.mobile.menu-panel > ul > li:nth-child(3)');
+
+          // get href from Sale button
+          // tslint:disable-next-line:max-line-length
+          const salePageHref = await page.$eval('#gen-nav-commerce-header > header > nav.ncss-container.bg-white > section.d-sm-b > div > div.l-mobile-nav.d-lg-h.pt2-sm.pb2-sm > nav > div > div.mobile-menu-panel.is-active > ul > li:nth-child(6) > a', el => el.getAttribute('href'));
+          await page.goto(salePageHref);
+          await page.waitFor('#Wall > div > div.header-position.css-iqr4dm');
+
+          // tslint:disable-next-line:max-line-length
+          await page.waitFor('#Wall > div > div.categories.css-mzf2z2.is--mobile > div > div.simplebar-wrapper > div.simplebar-mask > div > div > a:nth-child(1) > div');
+          // tslint:disable-next-line:max-line-length
+          const countDiv = await page.$eval('#Wall > div > div.categories.css-mzf2z2.is--mobile > div > div.simplebar-wrapper > div.simplebar-mask > div > div > a:nth-child(1) > div', el => el.innerHTML);
+          const total = countDiv.replace(/\(|\)/gi, '');
+          // tslint:disable-next-line:max-line-length
+          await page.click('#Wall > div > div.categories.css-mzf2z2.is--mobile > div > div.simplebar-wrapper > div.simplebar-mask > div > div > a:nth-child(1)');
+
+          let productCards;
+          // do {
+          Logger.log('start', total);
+          await page.evaluate(async () => {
+            await new Promise((resolve, reject) => {
+              let totalHeight = (document.body.scrollHeight > 10000) ? (document.body.scrollHeight - 6000) : 0;
+              const distance = 100;
+              const timer = setInterval(() => {
+                const scrollHeight = document.body.scrollHeight;
+                window.scrollBy(0, distance);
+                totalHeight += distance;
+
+                if (totalHeight >= scrollHeight) {
+                  clearInterval(timer);
+                  resolve();
+                }
+              }, 200);
+            });
+          });
+          productCards = await page.$$('#Wall > div > div.results__body > div > main > section > div > div > .product-card__body');
+          Logger.log('end', productCards.length);
+          // } while (productCards.length < total);
+          const products = [];
+          for (const productCard of productCards) {
+            const name = await productCard.$eval('.product-card__link-overlay', el => el.innerHTML);
+            const priceReduced = await productCard.$eval('.css-i260wg', el => el.innerHTML);
+            const priceOriginal = await productCard.$eval('.css-31z3ik.css-ndethb', el => el.innerHTML);
+            const picture = await productCard.$eval('picture > img', el => el.getAttribute('src'));
+            const href = await productCard.$eval('.product-card__link-overlay', el => el.getAttribute('href'));
+            const type = 'SALE';
+            products.push({ name, priceReduced, priceOriginal, picture, href, type });
+          }
+
+          await nikeService.clean();
+          await nikeService.createMany(products);
+
+          Logger.log('Done crawl Nike Sale Job at ' + new Date());
+        } catch (error) {
+          Logger.log('error:', error);
+        } finally {
+          Logger.log('browser is closed:');
+          await page.close();
+          await browser.close();
+        }
+      });
+    });
+  }
 
   @Get()
   getHello(): string {
@@ -14,38 +96,5 @@ export class AppController {
   @Get('photos/:fileId')
   async serveAvatar(@Param('fileId') fileId, @Res() res): Promise<any> {
     res.sendFile(fileId, { root: 'photos' });
-  }
-
-  @Get('nike/sale')
-  async serveSaleNike(@Res() res, @Query('name') withName: string, @Query('page') page: number): Promise<any> {
-    const path = process.env.NIKE_SALE_PATH;
-    ensureDirSync(path);
-    const directories = readdirSync(path);
-    // tslint:disable-next-line:no-console
-    console.log('directories', directories);
-    if (directories.length === 0) {
-      res.send([]);
-    } else {
-      // tslint:disable-next-line:no-console
-      console.log('directories[directories.length - 1]', directories[directories.length - 1]);
-      // res.sendFile(directories[directories.length - 1], { root: path });
-      let products = readJsonSync(path + '/' + directories[directories.length - 1]);
-      const filterBy = str => products.filter(
-        item => new RegExp('^' + str.replace(/\*/g, '.*') + '$').test(item.name.toLowerCase()),
-      );
-      products = withName ? filterBy(`*${withName.toLowerCase()}*`) : products;
-      const paginate = (array, pageSize, pageNumber) => {
-        --pageNumber; // because pages logically start with 1, but technically with 0
-        return array.slice(pageNumber * pageSize, (pageNumber + 1) * pageSize);
-      };
-      const items = paginate(products, process.env.LIMIT_PAGE, page ? (page < 1 ? 1 : page) : 1);
-      const dataReturn = {
-        items,
-        itemCount: items.length,
-        total: products.length,
-        pageCount: Math.ceil(products.length / parseInt(process.env.LIMIT_PAGE, null)),
-      };
-      res.send(dataReturn);
-    }
   }
 }

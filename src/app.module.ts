@@ -16,6 +16,8 @@ import { StockModule } from './stock/stock.module';
 import { OrderModule } from './order/order.module';
 import { OrderDetailModule } from './order_detail/orderDetail.module';
 import { InvoiceModule } from './invoice/invoice.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { NikesModule } from './nike/nikes.module';
 
 @Module({
   imports: [
@@ -31,8 +33,10 @@ import { InvoiceModule } from './invoice/invoice.module';
       logging: true,
       ssl: true,
     }),
+    // tslint:disable-next-line:max-line-length
+    MongooseModule.forRoot('mongodb+srv://tamphan91:5ba7bay5ba@sale-wqeq8.mongodb.net/mydb?retryWrites=true&w=majority', { useNewUrlParser: true,  useUnifiedTopology: true }),
     AuthModule, UserModule, ProfileModule, CategoryModule, ProductModule, AddressModule,
-     SwatchModule, ProductDetailModule, StockModule, OrderModule, OrderDetailModule, InvoiceModule],
+     SwatchModule, ProductDetailModule, StockModule, OrderModule, OrderDetailModule, InvoiceModule, NikesModule],
   controllers: [AppController, ProfileController],
   providers: [AppService],
 })
