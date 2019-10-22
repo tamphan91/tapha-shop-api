@@ -4,5 +4,5 @@ export interface CreateNikeDto {
     readonly priceOriginal: string;
     readonly picture: string;
     readonly href: string;
-    readonly type: string;
+    readonly gender: string;
 }

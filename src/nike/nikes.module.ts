@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common';
 import { NikeController } from './nikes.controller';
 import { NikesService } from './nikes.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { NikeSchema } from './schemas/nike.schema';
+// import { MongooseModule } from '@nestjs/mongoose';
+// import { NikeSchema } from './schemas/nike.schema';
+import { DatabaseModule } from '../database/database.module';
+import { nikesProviders } from './nikes.providers';
 
 @Module({
-    // imports: [DatabaseModule],
-    imports: [MongooseModule.forFeature([{ name: 'NIKE', schema: NikeSchema }])],
+    imports: [DatabaseModule],
+    providers: [NikesService, ...nikesProviders],
+    // imports: [MongooseModule.forFeature([{ name: 'NIKE', schema: NikeSchema }])],
+    // providers: [NikesService],
     controllers: [NikeController],
-    // providers: [NikesService, ...nikesProviders],
-    providers: [NikesService],
     exports: [NikesService],
 })
 export class NikesModule {}

@@ -1,5 +1,5 @@
 import { NikesService } from './nikes.service';
-import { Post, Body, Get, Controller, Delete, Query, Logger, Res } from '@nestjs/common';
+import { Post, Body, Get, Controller, Delete, Query, Res } from '@nestjs/common';
 import { CreateNikeDto } from './dto/create-nike.dto';
 
 @Controller('nike')
@@ -12,9 +12,9 @@ export class NikeController {
     }
 
     @Get('sale')
-    async serveSaleNike(@Res() res, @Query('name') withName: string, @Query('page') page: number, @Query('type') type: string): Promise<any> {
+    async serveSaleNike(@Res() res, @Query('name') withName: string, @Query('page') page: number, @Query('gender') gender: string): Promise<any> {
 
-        const result = await this.nikesService.findAll(withName, page, type);
+        const result = await this.nikesService.findAll(withName, page, gender);
         res.send(result);
     }
 

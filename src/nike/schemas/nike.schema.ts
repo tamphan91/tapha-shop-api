@@ -6,5 +6,5 @@ export const NikeSchema = new mongoose.Schema({
     priceOriginal: String,
     picture: String,
     href: String,
-    type: String,
+    gender: String,
 }, { timestamps: true});

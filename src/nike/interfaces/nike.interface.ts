@@ -1,5 +1,4 @@
 import { Document } from 'mongoose';
-
 export interface Nike extends Document {
     readonly created: Date;
     readonly name: string;
@@ -7,5 +6,5 @@ export interface Nike extends Document {
     readonly priceOriginal: string;
     readonly picture: string;
     readonly href: string;
-    readonly type: string;
+    readonly gender: string;
 }
