@@ -8,7 +8,7 @@ import { Gender } from './common/constants';
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService, private readonly nikeService: NikesService) {
-    scheduleJob('*/5 * * * *', () => {
+    scheduleJob('*/7 * * * *', () => {
       Logger.log('Start crawl Nike Sale Job at ' + new Date());
       // tslint:disable-next-line:max-line-length
       launch({ args: ['--no-sandbox', '--unlimited-storage', '--full-memory-crash-report', '--force-gpu-mem-available-mb'] }).then(async browser => {
