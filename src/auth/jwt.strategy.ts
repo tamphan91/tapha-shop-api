@@ -16,8 +16,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: any) {
     Logger.log('jwt validate');
-    // tslint:disable-next-line:no-console
-    console.log(payload);
+    // // tslint:disable-next-line:no-console
+    // console.log(payload);
     return { payload }; // added payload to @Request() req -> req.user
   }
 }

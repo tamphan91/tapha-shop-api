@@ -37,7 +37,7 @@ export class UserController implements CrudController<User> {
     }
 
     @Roles(UserRole.Moderator)
-    @UseGuards(AuthGuard('jwt'), RolesGuard, PermissionsGuard)
+    @UseGuards(AuthGuard(), RolesGuard, PermissionsGuard)
     @ApiBearerAuth()
     @Override('getManyBase')
     getUsers(

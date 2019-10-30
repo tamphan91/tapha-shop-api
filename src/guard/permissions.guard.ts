@@ -11,7 +11,7 @@ export class PermissionsGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     // tslint:disable-next-line:no-console
-    console.log(request);
+    // console.log(request);
     const id = parseInt(request.params.id, null);
     if (!id) {
       return true;
