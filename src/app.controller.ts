@@ -166,7 +166,7 @@ export class AppController {
     // });
 
     // ADIDAS
-    scheduleJob('10-59/20 * * * *', () => {
+    scheduleJob('*/5 * * * *', () => {
       Logger.log('Start crawl Adidas Sale Job at ' + new Date());
       // tslint:disable-next-line:max-line-length
       launch({ args: ['--no-sandbox', '--unlimited-storage', '--full-memory-crash-report', '--force-gpu-mem-available-mb'] }).then(async browser => {
