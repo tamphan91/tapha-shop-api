@@ -21,9 +21,15 @@ import { StockModule } from './stock/stock.module';
 import { OrderModule } from './order/order.module';
 import { OrderDetailModule } from './order_detail/orderDetail.module';
 import { InvoiceModule } from './invoice/invoice.module';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule, { cors: true });
+    const app = await NestFactory.create<NestExpressApplication>(
+        AppModule, {cors: true},
+      );
+    // const app = await NestFactory.create(AppModule, { cors: true });
+    app.useStaticAssets(join(__dirname, '..', 'photos'));
     const port = process.env.PORT || 3000;
     const userRepository = getRepository(User);
     const adminUser = await userRepository.findOne({ email: 'tamphan91@gmail.com' });
