@@ -29,7 +29,7 @@ async function bootstrap() {
         AppModule, {cors: true},
       );
     // const app = await NestFactory.create(AppModule, { cors: true });
-    app.useStaticAssets(join(__dirname, '..', 'photos'));
+    app.useStaticAssets(join(__dirname, '..', 'photos'), {prefix: '/public/'});
     const port = process.env.PORT || 3000;
     const userRepository = getRepository(User);
     const adminUser = await userRepository.findOne({ email: 'tamphan91@gmail.com' });
