@@ -169,7 +169,7 @@ export class AppController {
     scheduleJob('10-59/20 * * * *', () => {
       Logger.log('Start crawl Adidas Sale Job at ' + new Date());
       // tslint:disable-next-line:max-line-length
-      launch({ args: ['--no-sandbox', '--unlimited-storage', '--full-memory-crash-report', '--force-gpu-mem-available-mb'] }).then(async browser => {
+      launch().then(async browser => {
         let productCards;
         const products = [];
 
@@ -184,7 +184,7 @@ export class AppController {
           if (modal) {
             await modal.click();
           }
-
+          await page.screenshot({path: 'photos/adidas.png'});
           // check type web
           // tslint:disable-next-line:max-line-length
           if (await page.$('#app > div > div > div > div > div > div.header___3wNCY.gl-is-sticky > div.header-mobile___2zdY0 > div.left-items___3awh8')) {
@@ -448,12 +448,13 @@ export class AppController {
 
   @Get('test123')
   async test(@Req() req) {
-    launch({ args: ['--no-sandbox', '--unlimited-storage', '--full-memory-crash-report', '--force-gpu-mem-available-mb'] }).then(async browser => {
+    // tslint:disable-next-line:max-line-length
+    launch(req.query.config ? { args: ['--no-sandbox', '--unlimited-storage', '--full-memory-crash-report', '--force-gpu-mem-available-mb'] } : null).then(async browser => {
       const page = await browser.newPage();
       await page.emulate(devices[req.query.device ? req.query.device : 'iPhone X']);
       await page.goto(`https://${req.query.name}.com/us`);
       await page.waitFor(2000);
-      // await page.screenshot({path: 'photos/img1.png'});
+      await page.screenshot({path: 'photos/img1.png'});
       await browser.close();
     });
     return 'done';
