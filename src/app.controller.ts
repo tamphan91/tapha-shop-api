@@ -448,12 +448,12 @@ export class AppController {
 
   @Get('test123')
   async test(@Req() req) {
-    launch().then(async browser => {
+    launch({ args: ['--no-sandbox', '--unlimited-storage', '--full-memory-crash-report', '--force-gpu-mem-available-mb'] }).then(async browser => {
       const page = await browser.newPage();
       await page.emulate(devices[req.query.device ? req.query.device : 'iPhone X']);
       await page.goto(`https://${req.query.name}.com/us`);
       await page.waitFor(2000);
-      await page.screenshot({path: 'photos/img1.png'});
+      // await page.screenshot({path: 'photos/img1.png'});
       await browser.close();
     });
     return 'done';
