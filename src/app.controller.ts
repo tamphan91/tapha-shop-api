@@ -449,7 +449,7 @@ export class AppController {
   @Get('test123')
   async test(@Req() req) {
     // tslint:disable-next-line:max-line-length
-    launch(req.query.config ? { args: ['--no-sandbox', '--unlimited-storage', '--full-memory-crash-report', '--force-gpu-mem-available-mb'] } : null).then(async browser => {
+    launch(req.query.config ? { args: ['--no-sandbox', '--unlimited-storage', '--full-memory-crash-report', '--force-gpu-mem-available-mb'] } : {}).then(async browser => {
       const page = await browser.newPage();
       await page.emulate(devices[req.query.device ? req.query.device : 'iPhone X']);
       await page.goto(`https://${req.query.name}.com/us`);
