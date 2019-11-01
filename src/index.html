@@ -1,0 +1,74 @@
+<html>
+  <head>
+<script src="socket.io.js"></script>
+<script>
+     var socket;
+	
+     function connect() {
+      	socket = io('ws://localhost:3333/chat');
+	var name = document.getElementById('name');
+        socket.on('connect', () => {
+		socket.emit('login', name.value,);
+		name.disabled = true;
+	});
+      socket.on('events', function(data) {
+        console.log('events', data);
+      });
+	socket.on('chat', function(data) {
+        console.log('chat', data);
+      });
+socket.on('login', function(data) {
+        console.log('login', data);
+      });
+	socket.on('chat-all', function(data) {
+        console.log('chat-all', data);
+      });
+	socket.on('users', function(data) {
+        console.log('users', data);
+      });
+      socket.on('exception', function(data) {
+        console.log('event', data);
+      });
+      socket.on('disconnect', function() {
+        console.log('Disconnected');
+	var name = document.getElementById('name');
+	socket.emit('logout', name.value);
+      });
+	}
+
+	function chat() {
+		var recipient = document.getElementById('to').value;
+		var content = document.getElementById('content').value;
+		var sender = document.getElementById('name').value;
+		var type = 'single';
+		socket.emit('chat', {sender, recipient , content, type})
+	}
+	function chatAll() {
+	var content = document.getElementById('chat-all').value;
+		socket.emit('chat-all', content)
+	}
+	function joinRoom() {
+		var roomName = document.getElementById('join-room').value;
+		socket.emit('join-room', roomName, (data) => {
+			console.log(data);
+		})
+	}
+	function chatRoom() {
+		var recipient = document.getElementById('join-room').value;
+		var content = document.getElementById('chat-room').value;
+		var sender = document.getElementById('name').value;
+		var type = 'group';
+		socket.emit('chat', {sender, recipient , content, type})
+	}
+    </script>
+  </head>
+
+  <body>
+	<input id="name" type="text"/><button onclick="connect()">connect</button><br>
+	to<input id="to" type="text"/><br>
+	<input id="content" type="text"/><button onclick="chat()">chat</button><br>
+	<input id="chat-all" type="text"/><button onclick="chatAll()">chat-all</button><br>
+	<input id="join-room" type="text"/><button onclick="joinRoom()">join-room</button><br>
+	<input id="chat-room" type="text"/><button onclick="chatRoom()">chat-room</button>
+</body>
+</html>

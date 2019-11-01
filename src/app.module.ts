@@ -19,6 +19,8 @@ import { InvoiceModule } from './invoice/invoice.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NikesModule } from './nike/nikes.module';
 import { AdidasModule } from './adidas/adidas.module';
+import { EventsModule } from './events/events.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -36,7 +38,7 @@ import { AdidasModule } from './adidas/adidas.module';
     }),
     // tslint:disable-next-line:max-line-length
     MongooseModule.forRoot('mongodb+srv://tamphan91:5ba7bay5ba@sale-wqeq8.mongodb.net/mydb?retryWrites=true&w=majority', { useNewUrlParser: true,  useUnifiedTopology: true }),
-    AuthModule, UserModule, ProfileModule, CategoryModule, ProductModule, AddressModule,
+    AuthModule, UserModule, ProfileModule, CategoryModule, ProductModule, AddressModule, EventsModule, ChatModule,
      SwatchModule, ProductDetailModule, StockModule, OrderModule, OrderDetailModule, InvoiceModule, NikesModule, AdidasModule],
   controllers: [AppController, ProfileController],
   providers: [AppService],
