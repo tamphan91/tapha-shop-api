@@ -48,6 +48,8 @@ import { ConfigModule } from './config/config.module';
     GraphQLModule.forRoot({
       installSubscriptionHandlers: true,
       autoSchemaFile: 'schema.gql',
+      introspection: true,
+      playground: true,
     }),
     SwatchModule, ProductDetailModule, StockModule, OrderModule, OrderDetailModule, InvoiceModule, NikesModule, AdidasModule],
   controllers: [AppController, ProfileController],
