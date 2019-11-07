@@ -1,12 +1,12 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { Nike } from './interfaces/nike.interface';
+// import { Nike } from './interfaces/nike.interface';
 import { CreateNikeDto } from './dto/create-nike.dto';
 // import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class NikesService {
-    constructor(@Inject('SALE_MODEL') private readonly saleModel: Model<Nike>) { }
+    constructor(@Inject('SALE_MODEL') private readonly saleModel: Model) { }
 
     async createMany(createNikeDtos: CreateNikeDto[]) {
         return await this.saleModel.insertMany(createNikeDtos);
@@ -26,7 +26,6 @@ export class NikesService {
                 query = { gender};
             }
         }
-
         const items = await this.saleModel.find(query).skip(skips).limit(limits).exec();
         const total = await this.saleModel.countDocuments(query);
         const dataReturn = {

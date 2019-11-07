@@ -17,11 +17,13 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "postinstall": "npm run prestart:prod"
   },
   "dependencies": {
     "@nestjs/common": "^6.8.5",
     "@nestjs/core": "^6.8.5",
+    "@nestjs/graphql": "^6.5.3",
     "@nestjs/jwt": "^6.1.1",
     "@nestjs/mongoose": "^6.1.2",
     "@nestjs/passport": "^6.1.0",
@@ -35,12 +37,15 @@
     "@nestjsx/crud-typeorm": "^4.2.0",
     "@types/node-schedule": "^1.2.4",
     "@types/puppeteer": "^1.20.2",
+    "apollo-server-express": "^2.9.7",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.9.1",
     "cloudinary": "^1.15.0",
     "csurf": "^1.10.0",
     "dotenv": "^8.1.0",
     "express-rate-limit": "^5.0.0",
+    "graphql": "^14.5.8",
+    "graphql-tools": "^4.0.6",
     "helmet": "^3.20.1",
     "moment": "^2.24.0",
     "mongoose": "^5.7.5",
@@ -56,6 +61,7 @@
     "rxjs": "^6.5.3",
     "socket.io-redis": "^5.2.0",
     "swagger-ui-express": "^4.0.7",
+    "type-graphql": "^0.17.5",
     "typeorm": "^0.2.18"
   },
   "devDependencies": {

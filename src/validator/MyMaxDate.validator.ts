@@ -3,7 +3,6 @@ import * as moment from 'moment';
 
 @ValidatorConstraint({ async: true })
 export class MyMaxDateConstraint implements ValidatorConstraintInterface {
-
     validate(dateInput: any, args: ValidationArguments) {
         // tslint:disable-next-line:no-console
         // console.log('dateInput', dateInput);
