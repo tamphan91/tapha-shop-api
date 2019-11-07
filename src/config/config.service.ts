@@ -42,8 +42,8 @@ export class ConfigService {
             API_KEY: Joi.string().required(),
             API_SECRET: Joi.string().required(),
 
-            MONGODB_NIKE_URI: Joi.string().required(),
             MONGODB_ADIDAS_URI: Joi.string().required(),
+            MONGODB_NIKE_URI: Joi.string().required(),
             LIMIT_PAGE: Joi.number().required(),
         });
 
