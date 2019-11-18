@@ -1,14 +1,17 @@
-import { Controller, UseGuards, Post, Body, Logger, Request, Get, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, UseGuards, Post, Body, Logger, Request, Get, Req, Res} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
-import { LoginUserDTO } from '../user/login-user.dto';
-import { ApiUseTags, ApiOAuth2Auth, ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
+import { LoginUserDTO } from './login-user.dto';
+import { ApiUseTags, ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
 import { Provider } from '../common/constants';
+import { RegisterUserDTO } from './register-user.dto';
+import { UserService } from '../user/user.service';
+import { ProfileService } from '../profile/profile.service';
 
 @ApiUseTags('auths')
 @Controller()
 export class AuthController {
-    constructor(private authService: AuthService) {
+    constructor(private authService: AuthService, private userService: UserService, private profileSerive: ProfileService) {
     }
 
     @UseGuards(AuthGuard('local'))
@@ -16,6 +19,14 @@ export class AuthController {
     async login(@Body() user: LoginUserDTO, @Request() req) {
         Logger.log('controller is logging...');
         return this.authService.login(req.user);
+    }
+
+    @Post('register')
+    async register(@Body() user: RegisterUserDTO) {
+        const profileId = await this.profileSerive.initProfile(user.firstName, user.lastName, user.gender);
+        await this.userService.initUser(user.email, user.password, profileId);
+        const userValidated = await this.authService.validateUser(user.email, user.password);
+        return this.authService.login(userValidated);
     }
 
     @ApiOperation({ description: 'Login by google account', title: 'Login by google account, ' + process.env.URL + '/google'})

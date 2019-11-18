@@ -1,6 +1,6 @@
 import { ArgsType, Field, Int } from 'type-graphql';
 import { Min } from 'class-validator';
-import { Gender } from '../../common/constants';
+import { Gender } from '../../../common/constants';
 
 @ArgsType()
 export class NikeArgs {

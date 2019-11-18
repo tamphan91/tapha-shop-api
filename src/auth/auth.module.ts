@@ -15,6 +15,7 @@ import { ProfileModule } from '../profile/profile.module';
 @Module({
   imports: [
     UserModule,
+    ProfileModule,
     GoogleModule,
     ProfileModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),

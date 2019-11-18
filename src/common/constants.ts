@@ -24,8 +24,8 @@ export enum Provider {
 }
 
 export enum Currency {
-    USD = 'usd',
-    VND = 'vnd',
+    USD = 'USD',
+    VND = 'VND',
 }
 
 export enum ProductStatus {

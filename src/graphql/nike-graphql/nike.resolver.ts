@@ -1,7 +1,7 @@
 import { Resolver } from 'type-graphql';
 import { Nike } from './models/nike';
 import { Query, Args } from '@nestjs/graphql';
-import { NikesService } from '../nike/nikes.service';
+import { NikesService } from '../../nike/nikes.service';
 import { Result } from './models/result';
 import { NikeArgs } from './dto/nike.args';
 

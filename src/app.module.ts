@@ -23,7 +23,7 @@ import { EventsModule } from './events/events.module';
 import { ChatModule } from './chat/chat.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { RecipesModule } from './recipes/recipes.module';
-import { NikeModule } from './nike-graphql/nike.module';
+import { NikeModule } from './graphql/nike-graphql/nike.module';
 import { ConfigModule } from './config/config.module';
 
 @Module({
