@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './user.entity';
-import { Repository } from 'typeorm';
+import { Repository, InsertResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 
@@ -20,5 +20,9 @@ export class UserService extends TypeOrmCrudService<User> {
 
   async findAll(conditions: any): Promise<User[]> {
     return await this.repo.find(conditions);
+  }
+
+  async initUser(email: string, password: string, profileId: number): Promise<InsertResult> {
+    return await this.repo.insert({email, password, profileId});
   }
 }
