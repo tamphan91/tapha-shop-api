@@ -25,6 +25,8 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { RecipesModule } from './recipes/recipes.module';
 import { NikeModule } from './nike-graphql/nike.module';
 import { ConfigModule } from './config/config.module';
+import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
+import { ConfigService } from './config/config.service';
 
 @Module({
   imports: [
@@ -40,6 +42,22 @@ import { ConfigModule } from './config/config.module';
       synchronize: process.env.DB_SYNCHRONIZE.toLocaleLowerCase() === 'true',
       logging: true,
       ssl: true,
+    }),
+    MailerModule.forRootAsync({
+      useFactory: async (configService: ConfigService) => ({
+        transport: configService.transport,
+        defaults: {
+          from: '"tapha-shop" <noreply@tapha-shop.com>',
+        },
+        template: {
+          dir: __dirname + '/../templates',
+          adapter: new HandlebarsAdapter(), // or new PugAdapter()
+          options: {
+            strict: true,
+          },
+        },
+      }),
+      inject: [ConfigService],
     }),
     // tslint:disable-next-line:max-line-length
     MongooseModule.forRoot('mongodb+srv://tamphan91:5ba7bay5ba@sale-wqeq8.mongodb.net/mydb?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true }),

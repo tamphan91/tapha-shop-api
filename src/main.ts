@@ -30,6 +30,7 @@ async function bootstrap() {
       );
     // const app = await NestFactory.create(AppModule, { cors: true });
     app.useStaticAssets(join(__dirname, '..', 'photos'), {prefix: '/public/'});
+    app.setGlobalPrefix('api');
     const port = process.env.PORT || 3000;
     const userRepository = getRepository(User);
     const adminUser = await userRepository.findOne({ email: 'tamphan91@gmail.com' });
@@ -38,7 +39,7 @@ async function bootstrap() {
         // tslint:disable-next-line:max-line-length
         const adminProfileToSave = profileRepository.create({ firstName: 'tam', lastName: 'phan', gender: Gender.Male, dateOfBirth: '1991-10-04', roles: [UserRole.Admin, UserRole.Moderator, UserRole.User] });
         const adminProfileReturn = await profileRepository.save(adminProfileToSave);
-        const adminUserToSave = userRepository.create({ email: 'tamphan91@gmail.com', password: '123', profileId: adminProfileReturn.id });
+        const adminUserToSave = userRepository.create({ email: 'tamphan91@gmail.com', password: '123456', profileId: adminProfileReturn.id });
         await userRepository.save(adminUserToSave);
         Logger.log('Inited admin user successfull!');
     }
@@ -66,6 +67,7 @@ async function bootstrap() {
         .setSchemes(schema)
         .setVersion('v36')
         .addBearerAuth()
+        .setBasePath('api')
         .build();
 
     const authDocument = SwaggerModule.createDocument(app, options, {

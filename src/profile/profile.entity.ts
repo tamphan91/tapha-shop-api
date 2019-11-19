@@ -42,6 +42,7 @@ export class Profile extends Base {
     @Column({
         type: 'enum',
         enum: [Gender.Famale, Gender.Male, Gender.Other],
+        nullable: true,
     })
     @IsString()
     @ApiModelProperty({example: Gender.Male, enum: [Gender.Famale, Gender.Male, Gender.Other] })

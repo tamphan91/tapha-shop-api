@@ -24,16 +24,16 @@ export class PermissionsGuard implements CanActivate {
 
   async hasPermission(request: any, id: number, roles: UserRole[]) {
     let isAllow = false;
-    if (request.originalUrl.indexOf('/users/') === 0) {
+    if (request.originalUrl.indexOf('/api/users/') === 0) {
       isAllow = request.user.payload.id === id;
-    } else if (request.originalUrl.indexOf('/profiles/') === 0) {
+    } else if (request.originalUrl.indexOf('/api/profiles/') === 0) {
       if (request.user.payload.profile.id === id) {
         isAllow = true;
       } else {
         const profile = await getRepository(Profile).findOne(id);
         isAllow = !profile.roles.includes(UserRole.Admin) && roles.includes(UserRole.Moderator);
       }
-    } else if (request.originalUrl.indexOf('/addresses/') === 0) {
+    } else if (request.originalUrl.indexOf('/api/addresses/') === 0) {
       const address = await getRepository(Address).findOne(id);
       if (request.user.payload.profile.id === address.profileId) {
         isAllow = true;

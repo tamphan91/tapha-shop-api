@@ -19,10 +19,8 @@ export class ProfileService extends TypeOrmCrudService<Profile> {
         return await this.repo.update(profileId, {roles});
     }
 
-    async initProfile(firstName: string, lastName: string, gender: Gender): Promise<number> {
-        const result = await this.repo.insert({firstName, lastName, gender});
-        // tslint:disable-next-line:no-console
-        console.log('result', result);
+    async initProfile(firstName: string, lastName: string): Promise<number> {
+        const result = await this.repo.insert({firstName, lastName});
         return result.identifiers[0].id;
     }
 }

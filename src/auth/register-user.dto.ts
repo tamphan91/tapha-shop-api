@@ -13,10 +13,6 @@ export class RegisterUserDTO {
     @IsString()
     lastName: string;
 
-    @IsString()
-    @ApiModelProperty({example: Gender.Male, enum: [Gender.Famale, Gender.Male, Gender.Other] })
-    gender: Gender;
-
     @ApiModelProperty({ example: 'tamphan91@gmail.com', description: 'The email of the User' })
     @IsEmail()
     @IsUserEmailAlreadyExist({
@@ -24,7 +20,7 @@ export class RegisterUserDTO {
       })
     readonly email: string;
 
-    @ApiModelProperty({ example: '123', description: 'The password of the User' })
+    @ApiModelProperty({ example: '123456', description: 'The password of the User' })
     @IsString()
     readonly password: string;
 }

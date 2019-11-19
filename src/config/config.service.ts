@@ -36,6 +36,7 @@ export class ConfigService {
             DB_SYNCHRONIZE: Joi.boolean().required(),
             URL: Joi.string().required(),
             CLIENT_URL: Joi.string().required(),
+            EMAIL_TRANSPORT: Joi.string().required(),
 
             SWAGGER_SCHEMA: Joi.string().required(),
             CLOUD_NAME: Joi.string().required(),
@@ -80,4 +81,15 @@ export class ConfigService {
         return Boolean(this.envConfig.DB_SYNCHRONIZE);
     }
 
+    get transport(): string {
+        return this.envConfig.EMAIL_TRANSPORT;
+    }
+
+    get url(): string {
+        return this.envConfig.URL;
+    }
+
+    get clientUrl(): string {
+        return this.envConfig.CLIENT_URL;
+    }
 }
