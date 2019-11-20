@@ -6,7 +6,7 @@ export class LoginUserDTO {
     @IsEmail()
     readonly email: string;
 
-    @ApiModelProperty({ example: '123', description: 'The password of the User' })
+    @ApiModelProperty({ example: '123456', description: 'The password of the User' })
     @IsString()
     readonly password: string;
 }
