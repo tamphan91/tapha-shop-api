@@ -7,11 +7,11 @@ import { Provider } from '../common/constants';
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, Provider.GOOGLE) {
 
-    constructor( private readonly authService: AuthService) {
+    constructor(private readonly authService: AuthService) {
         super({
-            clientID: '1021440325019-v4sbsr442rb94jb0gjsopn0av0okbuo6.apps.googleusercontent.com',     // <- Replace this with your client id
-            clientSecret: 'Fy1687FdoXH1f201YrYaDy9A', // <- Replace this with your client secret
-            callbackURL: process.env.URL + '/google/callback',
+            clientID: '728660161825-4m6clvpn88hu4mhmdl5cdrnb2sqp0jdt.apps.googleusercontent.com',     // <- Replace this with your client id
+            clientSecret: 'Sss1ocPkON7U1wpv-rSZ3JPw', // <- Replace this with your client secret
+            callbackURL: process.env.URL + '/api/auth/google/callback',
             passReqToCallback: true,
             scope: ['profile'],
         });

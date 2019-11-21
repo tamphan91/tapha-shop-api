@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Post, Body, Logger, Request, Get, Req, Res, NotFoundException, HttpCode } from '@nestjs/common';
+import { Controller, UseGuards, Post, Body, Logger, Request, Get, Req, Res, NotFoundException, HttpCode, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { LoginUserDTO } from './login-user.dto';
@@ -15,7 +15,7 @@ import { ConfigService } from '../config/config.service';
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService, private userService: UserService, private profileSerive: ProfileService
-        ,       private readonly mailerService: MailerService, private readonly config: ConfigService) {
+              , private readonly mailerService: MailerService, private readonly config: ConfigService) {
     }
 
     @UseGuards(AuthGuard('local'))
@@ -53,16 +53,16 @@ export class AuthController {
                     url: this.config.clientUrl + '/reset?token=' + token,
                 },
             });
-        return {message: 'please check your email to reset the password'};
+        return { message: 'please check your email to reset the password' };
     }
 
     @HttpCode(200)
     @Post('logout')
     async logout() {
-        return {message: 'OK MAN'};
+        return { message: 'OK MAN' };
     }
 
-    @ApiOperation({ description: 'Login by google account', title: 'Login by google account, ' + process.env.URL + '/google' })
+    @ApiOperation({ description: 'Login by google account', title: 'Login by google account, ' + process.env.URL + '/api/auth/google' })
     @Get('google')
     @UseGuards(AuthGuard(Provider.GOOGLE))
     googleLogin(@Res() res) {
@@ -76,9 +76,9 @@ export class AuthController {
         // handles the Google OAuth2 callback
         const jwt: string = req.user.jwt;
         if (jwt) {
-            res.redirect(process.env.CLIENT_URL + '/login/success/' + jwt);
+            res.redirect(process.env.CLIENT_URL + '/auth/token/' + jwt);
         } else {
-            res.redirect(process.env.CLIENT_URL + '/login/failure');
+            res.redirect(process.env.CLIENT_URL + '/auth/login/failure');
         }
     }
 }

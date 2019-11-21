@@ -72,10 +72,9 @@ export class AuthService {
         profile,
       };
 
-      const profileRepository = getRepository(Profile);
-      const googleRepository = getRepository(Google);
-
       if (!google) {
+        const profileRepository = getRepository(Profile);
+        const googleRepository = getRepository(Google);
         const userProfile = new Profile();
         userProfile.firstName = profile.given_name;
         userProfile.lastName = profile.family_name;
