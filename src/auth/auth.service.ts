@@ -55,6 +55,27 @@ export class AuthService {
     };
   }
 
+  async checkToken(token: string) {
+    let decode;
+    try {
+      await this.jwtService.verifyAsync(token);
+    } catch (err) {
+      if ( err.message === 'jwt expired') {
+        decode = this.jwtService.decode(token);
+        const exp = decode.exp;
+        const now = (new Date().getTime() / 1000);
+        const expiredMinutes = (now - exp) / 60;
+        if (expiredMinutes <= 5) { // refresh token condition < 30minutes
+          delete decode.iat;
+          delete decode.exp;
+        } else {
+          decode = null;
+        }
+      }
+    }
+    return decode;
+  }
+
   async validateOAuthLogin(thirdPartyId: string, provider: Provider, profile): Promise<string> {
     try {
       // You can add some registration logic here,

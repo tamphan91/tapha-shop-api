@@ -1,15 +1,18 @@
-import { Controller, UseGuards, Post, Body, Logger, Request, Get, Req, Res, NotFoundException, HttpCode, Query } from '@nestjs/common';
+// tslint:disable-next-line:max-line-length
+import { Controller, UseGuards, Post, Body, Logger, Request, Get, Req, Res, NotFoundException, HttpCode, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { LoginUserDTO } from './login-user.dto';
-import { ApiUseTags, ApiExcludeEndpoint, ApiOperation, ApiImplicitBody } from '@nestjs/swagger';
+import { ApiUseTags, ApiExcludeEndpoint, ApiOperation, ApiImplicitBody, ApiBearerAuth } from '@nestjs/swagger';
 import { Provider } from '../common/constants';
 import { RegisterUserDTO } from './register-user.dto';
 import { UserService } from '../user/user.service';
 import { ProfileService } from '../profile/profile.service';
-import { ForgotUserArgs } from './forgot-user-args';
+import { RequestPassArgs } from './request-pass-args';
 import { MailerService } from '@nest-modules/mailer';
 import { ConfigService } from '../config/config.service';
+import { ResetPassArgs } from './reset-pass-args';
+import { RefreshTokenArgs } from './refresh-token-args';
 
 @ApiUseTags('auths')
 @Controller('auth')
@@ -33,9 +36,9 @@ export class AuthController {
         return this.authService.login(userValidated);
     }
 
-    @Post('forgot')
+    @Post('request-pass')
     @HttpCode(200)
-    async forgot(@Body() args: ForgotUserArgs) {
+    async forgot(@Body() args: RequestPassArgs) {
         const user = await this.authService.checkUser(args.email);
 
         if (!user) {
@@ -50,7 +53,7 @@ export class AuthController {
                 subject: 'Reset your tapha-shop password',
                 template: 'reset-password', // The `.pug` or `.hbs` extension is appended automatically.
                 context: {  // Data to be sent to template engine.
-                    url: this.config.clientUrl + '/reset?token=' + token,
+                    url: this.config.clientUrl + `/auth/token/${token}/reset-password`,
                 },
             });
         return { message: 'please check your email to reset the password' };
@@ -59,7 +62,30 @@ export class AuthController {
     @HttpCode(200)
     @Post('logout')
     async logout() {
-        return { message: 'OK MAN' };
+        return { message: 'Logout successfully' };
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
+    @HttpCode(200)
+    @Post('reset-pass')
+    async reset(@Body() body: ResetPassArgs, @Request() req) {
+        const id = req.user.payload.id;
+        await this.userService.updateUser(body.password, id);
+        return { message: 'Reset password successfully' };
+    }
+
+    @HttpCode(200)
+    @Post('refresh-token')
+    async refreshToken(@Body() body: RefreshTokenArgs) {
+        const decode = await this.authService.checkToken(body.token);
+        if (decode) {
+            // tslint:disable-next-line:no-console
+            console.log('token is refreshed');
+            return await this.authService.login(decode);
+        } else {
+            throw new UnauthorizedException();
+        }
     }
 
     @ApiOperation({ description: 'Login by google account', title: 'Login by google account, ' + process.env.URL + '/api/auth/google' })
@@ -76,7 +102,7 @@ export class AuthController {
         // handles the Google OAuth2 callback
         const jwt: string = req.user.jwt;
         if (jwt) {
-            res.redirect(process.env.CLIENT_URL + '/auth/token/' + jwt);
+            res.redirect(process.env.CLIENT_URL + `/auth/token/${jwt}/login`);
         } else {
             res.redirect(process.env.CLIENT_URL + '/auth/login/failure');
         }
