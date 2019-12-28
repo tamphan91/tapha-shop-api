@@ -11,10 +11,10 @@ export class AppController {
     constructor(private readonly appService: AppService, private readonly nikeService: NikesService, private adidasService: AdidasService) {
 
         // NIKE
-        // scheduleJob('0-59/20 * * * *', () => {
+        scheduleJob('0-59/20 * * * *', () => {
             Logger.log('Start crawl Nike Sale Job at ' + new Date());
             // tslint:disable-next-line:max-line-length
-            launch({headless: false}).then(async browser => {
+            launch({ args: ['--no-sandbox', '--unlimited-storage', '--full-memory-crash-report', '--force-gpu-mem-available-mb'] }).then(async browser => {
                 let productCards;
                 const products = [];
 
@@ -163,7 +163,7 @@ export class AppController {
                 Logger.log('browser is closed:');
                 await browser.close();
             });
-        // });
+        });
 
         // // ADIDAS
         // scheduleJob('10-59/20 * * * *', () => {
