@@ -11,10 +11,10 @@ export class AppController {
     constructor(private readonly appService: AppService, private readonly nikeService: NikesService, private adidasService: AdidasService) {
 
         // NIKE
-        scheduleJob('0-59/20 * * * *', () => {
+        // scheduleJob('0-59/20 * * * *', () => {
             Logger.log('Start crawl Nike Sale Job at ' + new Date());
             // tslint:disable-next-line:max-line-length
-            launch({ args: ['--no-sandbox', '--unlimited-storage', '--full-memory-crash-report', '--force-gpu-mem-available-mb'] }).then(async browser => {
+            launch({headless: false}).then(async browser => {
                 let productCards;
                 const products = [];
 
@@ -36,7 +36,7 @@ export class AppController {
 
                     // get href from Sale button
                     // tslint:disable-next-line:max-line-length
-                    const salePageHref = await page.$eval('#gen-nav-commerce-header > header > nav.ncss-container.bg-white > section.d-sm-b > div > div.l-mobile-nav.d-lg-h.pt2-sm.pb2-sm > nav > div > div.mobile-menu-panel.is-active > ul > li:nth-child(6) > a', el => el.getAttribute('href'));
+                    const salePageHref = await page.$eval('#gen-nav-commerce-header > header > nav.ncss-container.bg-white > section.d-sm-b > div > div.l-mobile-nav.d-lg-h.pt2-sm.pb2-sm > nav > div > div.mobile-menu-panel.is-active > ul > li:nth-child(12) > a', el => el.getAttribute('href'));
                     await page.goto(salePageHref);
                     await page.waitFor('#Wall > div > div.header-position.css-iqr4dm');
 
@@ -105,7 +105,7 @@ export class AppController {
 
                     // get href from Sale button
                     // tslint:disable-next-line:max-line-length
-                    const salePageHref = await page.$eval('#gen-nav-commerce-header > header > nav.ncss-container.bg-white > section.d-sm-b > div > div.l-mobile-nav.d-lg-h.pt2-sm.pb2-sm > nav > div > div.mobile-menu-panel.is-active > ul > li:nth-child(6) > a', el => el.getAttribute('href'));
+                    const salePageHref = await page.$eval('#gen-nav-commerce-header > header > nav.ncss-container.bg-white > section.d-sm-b > div > div.l-mobile-nav.d-lg-h.pt2-sm.pb2-sm > nav > div > div.mobile-menu-panel.is-active > ul > li:nth-child(12) > a', el => el.getAttribute('href'));
                     await page.goto(salePageHref);
                     await page.waitFor('#Wall > div > div.header-position.css-iqr4dm');
 
@@ -163,7 +163,7 @@ export class AppController {
                 Logger.log('browser is closed:');
                 await browser.close();
             });
-        });
+        // });
 
         // // ADIDAS
         // scheduleJob('10-59/20 * * * *', () => {
