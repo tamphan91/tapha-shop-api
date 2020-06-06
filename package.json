@@ -38,7 +38,7 @@
     "@nestjsx/crud-typeorm": "^4.2.0",
     "@types/node-schedule": "^1.2.4",
     "@types/puppeteer": "^1.20.2",
-    "apollo-server-express": "^2.9.7",
+    "apollo-server-express": "^2.14.2",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.9.1",
     "cloudinary": "^1.15.0",
