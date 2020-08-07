@@ -39,7 +39,7 @@
     "@types/node-schedule": "^1.2.4",
     "@types/puppeteer": "^1.20.2",
     "apollo-server-express": "^2.9.7",
-    "class-transformer": "^0.2.3",
+    "class-transformer": "^0.3.1",
     "class-validator": "^0.9.1",
     "cloudinary": "^1.15.0",
     "csurf": "^1.10.0",
