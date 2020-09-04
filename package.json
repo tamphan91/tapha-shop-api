@@ -62,7 +62,7 @@
     "rxjs": "^6.5.3",
     "socket.io-redis": "^5.2.0",
     "swagger-ui-express": "^4.0.7",
-    "type-graphql": "^0.17.5",
+    "type-graphql": "^0.17.6",
     "typeorm": "^0.2.18"
   },
   "devDependencies": {
