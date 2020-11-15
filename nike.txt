@@ -1,0 +1,34 @@
+const puppeteer = require('puppeteer');
+
+const escapeXpathString = str => {
+    const splitedQuotes = str.replace(/'/g, `', "'", '`);
+    return `concat('${splitedQuotes}', '')`;
+  };
+  
+  const clickByText = async (page, text) => {
+    const escapedText = escapeXpathString(text);
+    const linkHandlers = await page.$x(`//button[contains(text(), ${escapedText})]`);
+    
+    if (linkHandlers.length > 0) {
+      await linkHandlers[0].click();
+    } else {
+      throw new Error(`Link not found: ${text}`);
+    }
+  };
+  
+
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+//   page.setViewport({ width: 1280, height:720 });
+
+  const size = 'EU 40.5';
+  const url = 'https://www.nike.com/vn/launch/t/air-force-1-low-1-800';
+  await page.goto(url, { waitUntil: 'networkidle2' });
+
+  await clickByText(page, size);
+  await page.click('#root > div > div > div.main-layout > div > div.ncss-col-sm-12.full > div.pdp-container.ncss-col-sm-12.full > div > section.card-product-component.ncss-row.bg-white.mt0-sm.mb2-sm.mt7-lg.mb7-md.show-product > div.aside-container.ncss-col-sm-12.ncss-col-lg-4.va-sm-t.pt0-sm.pr7-sm.pb0-sm.pl7-sm.pt12-md.pb12-md.pt0-lg.pb0-lg.pl5-lg.mt5-sm.mb3-sm.mt0-lg.mb0-lg.fixie > aside > div > div:nth-child(2) > div > div.buying-tools-container > div > button');
+  await page.screenshot({path: 'nike.png'});
+
+//   await browser.close();
+})();
